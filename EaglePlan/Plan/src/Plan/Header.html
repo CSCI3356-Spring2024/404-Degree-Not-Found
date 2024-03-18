@@ -1,7 +1,11 @@
-{% extends Landing.html %}
+{% extends "Landing.html" %}
 
 {% load static %}
 <link rel="stylesheet" href="{% static 'Plan/Header.css' %}">
 
+{% block content %} 
 <div className = "Header_Decorator">
+    <div className = "Header_Image"></div>
+    <div className = "Header_Text"></div>
 </div>
+{% endblock %}
