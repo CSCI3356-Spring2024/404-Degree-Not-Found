@@ -34,3 +34,8 @@ def landing_view(request, *args, **kwargs):
  	#return HttpResponse('<h1>Hello World</h1>') #string of HTML code
 	return render(request, 'Landing.html', {}) 
 
+def profile_view(request):
+    return render(request, 'profile.html', {})
+
+def future_plan_view(request):
+    return render(request, 'future_plan.html', {})
