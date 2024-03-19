@@ -19,3 +19,9 @@ class Student(User):
     minor2 = models.CharField(max_length = 100, default="NA")
     grad_year = models.CharField(max_length = 100)
     entered = models.CharField(max_length = 100)
+
+class Advisor(User):
+    pass
+
+class Admin(User):
+    pass
