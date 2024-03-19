@@ -1,4 +1,3 @@
-.header-decorator {
-    background: #931C22;
-    color: white;
+body {
+    background-color: red;
 }
