@@ -33,7 +33,7 @@ def landing_view(request, *args, **kwargs):
 	print(args, kwargs)
 	print(request.user)
  	#return HttpResponse('<h1>Hello World</h1>') #string of HTML code
-	return render(request, 'Landing.html', {}) 
+	return render(request, 'Landing.html', {'user': request.user}) 
 
 def profile_view(request):
     return render(request, 'profile.html', {})
