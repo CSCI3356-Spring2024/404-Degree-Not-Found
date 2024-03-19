@@ -15,7 +15,7 @@ class User(models.Model):
 class Student(User):
     major = models.CharField(max_length = 100, default="Undecided")
     major2 =  models.CharField(max_length = 100, default="NA")
-    minor1 = models.CharField(max_length = 100, default="NA")
+    minor = models.CharField(max_length = 100, default="NA")
     minor2 = models.CharField(max_length = 100, default="NA")
     grad_year = models.CharField(max_length = 100)
     entered = models.CharField(max_length = 100)
