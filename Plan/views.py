@@ -39,4 +39,4 @@ def profile_view(request):
     return render(request, 'profile.html', {})
 
 def future_plan_view(request):
-    return render(request, 'future_plan.html', {})
+    return render(request, 'futureplan.html', {})

@@ -8,4 +8,5 @@ urlpatterns = [
     #path("", views.LandingView.as_view(), name="landing"),
     path('admin/', admin.site.urls),
     path('', include('Plan.urls')),
+    path('future-plan/', views.future_plan_view, name='futureplan'),
 ]
