@@ -18,9 +18,3 @@ def landing_view(request, *args, **kwargs):
  	#return HttpResponse('<h1>Hello World</h1>') #string of HTML code
 	return render(request, 'Landing.html', {}) 
 
-
-#class LandingView(generic.CreateView):
-     #links to the html code in "plan/Landing.html"
-# 	template_name = "plan/Landing.html"
-# 	model = Name
-
