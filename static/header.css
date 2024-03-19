@@ -6,10 +6,19 @@
     padding: 20px;
 }
 
+.header_container {
+    display: flex;
+    gap: 10px;
+}
+
 .header_text {
     color: #ffffff;
     font-size: 30px;
     font-weight: bold;
+}
+
+.header_img {
+    width: 35px;
 }
 
 
