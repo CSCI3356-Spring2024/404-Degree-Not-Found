@@ -17,5 +17,5 @@ urlpatterns = [
     path('signup/', views.signup_view, name='signup'),
     path('landing/', views.landing_view, name='landing'),
     path('profile/', views.profile_view, name='profile'),
-    path('future-plan/', views.future_plan_view, name='futureplan'),
+    path('futureplan/', views.future_plan_view, name='futureplan'),
 ]
