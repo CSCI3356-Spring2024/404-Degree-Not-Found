@@ -3,8 +3,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
-from .models import Name
 from django.contrib.auth import login
+
+
 
 def signup_view(request):
     if request.method == 'POST':
