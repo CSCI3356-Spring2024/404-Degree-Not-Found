@@ -5,13 +5,25 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib.auth import login
 from .forms import EditStudentInfo
-from .models import Student
+from .models import Student, Admin
 
 def signup_view(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
+            role = request.POST.get('role')
             user = form.save()
+            if role == 'student':
+                # Create a Student instance if the role is 'student'
+                Student.objects.create(user=user, major='Computer Science', grad_year='2025', entered='2021')
+            elif role == 'admin':
+                # Create an Admin instance if the role is 'admin'
+                Admin.objects.create(user=user)
+                # Additional logic for admin role if needed
+            #elif role == 'advisor':
+                # Create an Advisor instance if the role is 'advisor'
+                #Advisor.objects.create(user=user)
+                # Additional logic for advisor role if needed
             login(request, user)
             return redirect('Plan:landing')
     else:

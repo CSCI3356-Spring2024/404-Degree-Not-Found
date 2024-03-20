@@ -4,6 +4,12 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    <label for="id_role">Role:</label>
+    <select name="role" id="id_role">
+        <option value="student">Student</option>
+        <option value="admin">Admin</option>
+        <option value="advisor">Advisor</option>
+    </select>
     <button type="submit">Sign up</button>
 </form>
 {% endblock %}
