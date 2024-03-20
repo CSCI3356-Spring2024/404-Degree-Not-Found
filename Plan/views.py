@@ -4,6 +4,8 @@ from django.views import generic
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib.auth import login
+from .forms import EditStudentInfo
+from .models import Student
 
 def signup_view(request):
     if request.method == 'POST':
@@ -27,13 +29,23 @@ def login_view(request):
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
-def landing_view(request, *args, **kwargs):
-	print(args, kwargs)
-	print(request.user)
+def landing_view(request):
+    user = request.user
+    if Student.DoesNotExist:
+        new_student = Student(first_name=user.first_name, email=user.email)
+        new_student.save()
  	#return HttpResponse('<h1>Hello World</h1>') #string of HTML code
-	return render(request, 'Landing.html', {}) 
+    return render(request, 'Landing.html', {}) 
 
 def profile_view(request):
+    user = request.user
+    student = Student.objects.get(email=user.email)
+    if request.method == 'POST':
+        form = EditStudentInfo(request.POST, instance=student)
+        if form.is_valid():
+            form.save()
+        return redirect('Plan:landing') 
+    
     return render(request, 'profile.html', {})
 
 def future_plan_view(request):
