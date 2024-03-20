@@ -1,7 +1,9 @@
-{% include header.html %}
+{% extends 'Header.html' %}
 
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+{% block content %}
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
@@ -10,3 +12,4 @@
     <h1>Future 4-year plan</h1>
 </body>
 </html>
+{% endblock %}
