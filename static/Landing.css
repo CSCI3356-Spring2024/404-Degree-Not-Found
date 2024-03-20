@@ -1,46 +1,8 @@
 .Header_Div {
     background-color: #931C22;
 }
-body, html {
-    height: 100%;
-    margin: 0;
-    font-family: Arial, sans-serif;
-}
 
-.container {
-    display: flex;
-    height: 100vh;
-}
-
-.content-area, .button-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    padding: 20px;
-}
-
-.rectangle {
-    background-color: #f0f0f0;
-    width: 80%;
-    height: 100px;
-    text-align: center;
-    line-height: 100px;
-    border: 2px solid #000;
-}
-
-.button {
-    display: block;
-    background-color: #007bff;
-    color: #fff;
+a {
     text-decoration: none;
-    padding: 10px 20px;
-    text-align: center;
-    width: 80%;
-    margin-bottom: 10px;
-}
-
-.button:hover {
-    background-color: #0056b3;
-}
+    color: #070000;
+  }
