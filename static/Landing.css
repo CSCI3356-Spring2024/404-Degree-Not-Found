@@ -6,3 +6,41 @@ a {
     text-decoration: none;
     color: #070000;
   }
+
+  .container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.left-side, .right-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    width: 50%;
+}
+
+.rectangle {
+    border: 1px solid black;
+    width: 300px;
+    margin: 10px 0;
+    padding: 10px;
+    text-align: left;
+}
+
+.button {
+    text-decoration: none;
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 20px 0;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+}
+
+.right-side {
+    justify-content: center;
+    align-items: center;
+}
+
