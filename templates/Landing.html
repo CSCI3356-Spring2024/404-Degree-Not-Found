@@ -1,20 +1,23 @@
 {% extends 'Header.html' %}
 
 {% load static %}
-
-<link rel="stylesheet" href="{% static '/Landing.css' %}">
-
 {% block content %}
-    <h1>Progress Overview</h1>
-    <h1> Welcome back, {{user}}</h1>
-    <h1>Major</h1>
-    <div style="border: 1px solid black"width: 300px;">Computer Science</div>
-    <div style="border: 1px solid black"width: 300px;">Neuroscience</div>
-    <h1>Minors</h1>
-    <div style="border: 1px solid black"width: 300px;">Finance</div>
-    <h1>University Core</h1>
-    <div style="border: 1px solid black"width: 300px;">50%</div>
-    <h1>Total Credits</h1>
-    <div style="border: 1px solid black"width: 300px;">40%</div>
-    <a href="{% url 'Plan:futureplan' %}">4 Year Plan</a>
+<link rel="stylesheet" href="{% static 'Landing.css' %}">
+<div class="container">
+    <div class="left-side">
+        <h1>Progress Overview</h1>
+        <h2>Major</h2>
+        <div class="rectangle">Computer Science</div>
+        <div class="rectangle">Neuroscience</div>
+        <h3>Minors</h3>
+        <div class="rectangle">Finance</div>
+        <h3>University Core</h3>
+        <div class="rectangle">0%</div>
+        <h3>Total Credits</h3>
+        <div class="rectangle">0%</div>
+    </div>
+    <div class="right-side">
+        <a href="{% url 'Plan:futureplan' %}" class="button">4 Year Plan</a>
+    </div>
+</div>
 {% endblock %}
