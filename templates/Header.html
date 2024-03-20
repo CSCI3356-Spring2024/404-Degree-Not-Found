@@ -5,11 +5,16 @@
     <div class = "header">
         <div class = "header_container"> 
             <img class = "header_img" src="{% static '/images/eagleapps-logo-header.svg'%}"/>
-            <div class = "header_text">Eagle Plan</div>
+            <div class = "header_text"><a href="{% url 'Plan:landing' %}" class="link-white">Eagle Plan</a></div>
         
         </div>
         <div class = "header_container">
-            <div class = "profile_text"><a href="{% url 'Plan:profile' %}" class="link-white">{{ user }}</a></div>
+            <div class = "profile_text"><a href="{% url 'Plan:profile' %}" class="link-white">User Information</a></div>
+        </div>
+        {% if not request.path == '/' %}
+        <div class = "header_container">
+            <div class = "profile_text"><a href="{% url 'Plan:login' %}" class="link-white">{{ user }}</a></div>
+        {% endif %}
         </div>
         
     </div>
