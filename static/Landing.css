@@ -1,3 +1,8 @@
 .Header_Div {
     background-color: #931C22;
 }
+
+a {
+    text-decoration: none;
+    color: #070000;
+  }
