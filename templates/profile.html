@@ -2,6 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+{% block content %}
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
@@ -9,9 +10,13 @@
 <body>
     <h1>Profile Page</h1>
     <div>
-        
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Save Changes</button>
+        </form>
     </div>
 </body>
 </html>
-
+{% endblock %}
 

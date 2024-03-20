@@ -58,9 +58,11 @@ def profile_view(request):
         form = EditStudentInfo(request.POST, instance=student)
         if form.is_valid():
             form.save()
-        return redirect('Plan:landing') 
+            return redirect('Plan:landing') 
+    else:
+        form = EditStudentInfo(instance=student)
     
-    return render(request, 'profile.html', {})
+    return render(request, 'profile.html', {'form': form})
 
 def future_plan_view(request):
     return render(request, 'futureplan.html', {})
