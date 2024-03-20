@@ -31,10 +31,15 @@ a {
 
 .button {
     text-decoration: none;
-    display: inline-block;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    display: flex;
     padding: 10px 20px;
-    margin: 20px 0;
-    background-color: #007bff;
+    width: 100px;
+    height: 300px;
+    margin: 20px;
+    background-color: #719cca;
     color: white;
     border-radius: 5px;
 }
@@ -44,3 +49,7 @@ a {
     align-items: center;
 }
 
+.button-container {
+    display: flex;
+    justify-content: space-around;
+}

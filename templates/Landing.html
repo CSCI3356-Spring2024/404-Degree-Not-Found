@@ -17,7 +17,11 @@
         <div class="rectangle">0%</div>
     </div>
     <div class="right-side">
-        <a href="{% url 'Plan:futureplan' %}" class="button">4 Year Plan</a>
+        <div class="button-container">
+            <a href="{% url 'Plan:futureplan' %}" class="button">Plan 1</a>
+            <a href="{% url 'Plan:futureplan' %}" class="button">Plan 2</a>
+            <a href="{% url 'Plan:futureplan' %}" class="button">Plan 3</a>
+        </div>
     </div>
 </div>
 {% endblock %}
