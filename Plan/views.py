@@ -12,10 +12,12 @@ def signup_view(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             role = request.POST.get('role')
+            fname = request.POST.get('first_name')
+            lname = request.POST.get('last_name')
             user = form.save()
             if role == 'student':
                 # Create a Student instance if the role is 'student'
-                Student.objects.create(major='Computer Science', grad_year='2025', entered='2021')
+                Student.objects.create(first_name=fname, last_name=lname)
             elif role == 'admin':
                 # Create an Admin instance if the role is 'admin'
                 Admin.objects.create(user=user)

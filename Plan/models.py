@@ -12,10 +12,10 @@ class User(models.Model):
 
 #student class, this is where the majors, minors, school, start data and other information lives
 class Student(User):
-    major = models.CharField(max_length = 100, default="Undecided")
-    major2 =  models.CharField(max_length = 100, default="N/A")
-    minor = models.CharField(max_length = 100, default="N/A")
-    minor2 = models.CharField(max_length = 100, default="N/A")
+    major = models.CharField(max_length = 100, default="Computer Science")
+    major2 =  models.CharField(max_length = 100, default="None")
+    minor = models.CharField(max_length = 100, default="Studio Art")
+    minor2 = models.CharField(max_length = 100, default="None")
     grad_year = models.CharField(max_length = 100)
     entered = models.CharField(max_length = 100)
     school = models.CharField(max_length = 200, default="N/A")

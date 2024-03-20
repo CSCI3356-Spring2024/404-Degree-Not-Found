@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="{% static 'Landing.css' %}">
 <div class="container">
     <div class="left-side">
-        <h1>Progress Overview</h1>
+        <h1>Progress Overview for {{student.first_name}} {{student.last_name}}</h1>
         <h2>Major</h2>
         <div class="rectangle">{{student.major}}</div>
         {% if student.major2 != "None" %}
