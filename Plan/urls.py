@@ -11,9 +11,9 @@ from . import views
 
 app_name = "Plan"
 urlpatterns = [
-    path("", views.landing_view, name="landing"),
+    path("", views.login_view, name='login'),
     path('admin/', admin.site.urls),
-    path('login/', views.login_view, name='login'),
+    #path('login/', views.login_view, name='login'),
     path('signup/', views.signup_view, name='signup'),
     path('landing/', views.landing_view, name='landing'),
     path('profile/', views.profile_view, name='profile'),
