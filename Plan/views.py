@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from .forms import EditStudentInfo
 from .models import Student, Admin
 
@@ -68,3 +68,7 @@ def profile_view(request):
 
 def future_plan_view(request):
     return render(request, 'futureplan.html', {})
+
+def logout_view(request):
+    logout(request)
+    return redirect("/")
