@@ -53,11 +53,13 @@ SOCIALACCOUNT_PROVIDERS = {
             "profile",
             "email"
         ],
-        "AUTH_PARAMS": {"access_type": "online"}
-    },
-    'APP': {
-        'client_id': "846629146789-vdtleqm98imdk0ujq30b26if7jo8fk9u.apps.googleusercontent.com",
-        'secret': "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",
+        "AUTH_PARAMS": {
+            "access_type": "online"
+        },
+        'APP': {
+            'client_id': "846629146789-vdtleqm98imdk0ujq30b26if7jo8fk9u.apps.googleusercontent.com",
+            'secret': "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",
+        }
     }
 }
 
