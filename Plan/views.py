@@ -48,8 +48,8 @@ def landing_view(request):
     try:
         student = Student.objects.get(email=user.email)
     except Student.DoesNotExist:
-        new_student = Student(first_name=user.first_name, email=user.email)
-        new_student.save()
+        student = Student(first_name=user.first_name, email=user.email)
+        student.save()
  	#return HttpResponse('<h1>Hello World</h1>') #string of HTML code
     return render(request, 'Landing.html', {'student': student}) 
 
