@@ -1,19 +1,41 @@
-{% include 'header.html' %} 
+
+{% load widget_tweaks %}
+{% load static %}
+<head> 
+    <link rel="stylesheet" href="{% static 'login_form.css' %}"> 
+    <!-- <link rel="stylesheet" href="{% static 'header.css' %}"> -->
+</head>
 
 <body>
-    {% block content %}
-    <h2>Login</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Login</button>
-    </form>
+    <header>
+        <!-- {% block header %} -->
+        <!-- {% include 'header.html' %}  -->
+        <!-- {% endblock %} -->
+    </header>
+    <main>
+        {% block content %}
+        <div class="form-container">
+            <h1> Eagle Plan </h1>
+            <h2>Login</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    {% render_field form.username class="form-control" placeholder="Username" %}
+                </div>
+                <div class="form-group">
+                    {% render_field form.password class="form-control" placeholder="Password" %}
+                </div>
+                <button type="submit" class="submit-button">Login</button>
+            </form>
 
-    {% load socialaccount %}
-    <h2>Google Login</h2>
-    <a href="{% provider_login_url 'google' %}?next=/landing/">Login with Google</a>
-
-
-    <p>Don't have an account? <a href="{% url 'Plan:signup' %}" style="color:#000000;"> <b> Sign up</b></a></p>
-    {% endblock %}
+            {% load socialaccount %}
+            <h2>Google Login</h2>
+            <a href="{% provider_login_url 'google' %}?next=/landing/"> <b> Login with Google</b></a>
+        </div>
+        <div class="signup-option">
+            <p class="signup-text"> Don't have an account? </p> 
+            <a href="{% url 'Plan:signup' %}" class="signup-link"> <b> Sign up</b></a>  
+        </div>
+        {% endblock %}
+    </main>
 </body>
