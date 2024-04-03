@@ -4,12 +4,14 @@
 <!DOCTYPE html>
 <html lang="en">
 {% block content %}
+<link rel="stylesheet" href="{% static 'futureplan.css' %}">
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
 </head>
 <body>
     <h1>Future 4-year plan</h1>
+    <a href="{% url 'Plan:courses' %}" class="courses-button">Add/Edit Courses</a>
 </body>
 </html>
 {% endblock %}
