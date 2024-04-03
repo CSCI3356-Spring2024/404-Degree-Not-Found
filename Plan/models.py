@@ -28,3 +28,4 @@ class Advisor(User):
 
 class Admin(User):
     pass
+
