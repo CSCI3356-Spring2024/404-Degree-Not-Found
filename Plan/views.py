@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth import login, logout
 from .forms import EditStudentInfo
 from .models import Student, Admin
+from .api import fetch_course_data
 
 def signup_view(request):
     if request.method == 'POST':
@@ -73,3 +74,7 @@ def future_plan_view(request):
 def logout_view(request):
     logout(request)
     return redirect("/")
+
+def courseview(request, course_code):
+    course_details = fetch_course_data(course_code)
+    return render(request, 'courseview.html', {'course': course_details})
