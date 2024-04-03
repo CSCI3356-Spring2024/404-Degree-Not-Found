@@ -48,7 +48,7 @@ def landing_view(request):
     try:
         student = Student.objects.get(email=user.email)
     except Student.DoesNotExist:
-        student = Student(first_name=user.first_name, email=user.email)
+        student = Student(first_name=user.first_name, last_name=user.last_name, email=user.email)
         student.save()
         return redirect('Plan:profile')
  	#return HttpResponse('<h1>Hello World</h1>') #string of HTML code
