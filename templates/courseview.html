@@ -1,0 +1,23 @@
+{% extends 'Header.html' %}
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+{% block content %}
+    <div class="course-details-container">
+        {% if course %}
+            <h1>Course Details</h1>
+            <div class="course-detail">
+                <h2>{{ course.name }}</h2>
+                <p><strong>Course Code:</strong> {{ course.course_code }}</p>
+                <p><strong>Title:</strong> {{ course.title }}</p>
+                <p><strong>Description:</strong> {{ course.description }}</p>
+                <!-- Add more fields as needed -->
+            </div>
+        {% else %}
+            <p>No course details found.</p>
+        {% endif %}
+    </div>
+</html>
+{% endblock %}
