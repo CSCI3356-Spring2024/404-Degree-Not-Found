@@ -64,6 +64,9 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+# To bypass the "You are about to sign in using a third party account from Google" page
+SOCIALACCOUNT_LOGIN_ON_GET=True
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
