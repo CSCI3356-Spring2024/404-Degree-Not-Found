@@ -70,6 +70,9 @@ def profile_view(request):
 def future_plan_view(request):
     return render(request, 'futureplan.html', {})
 
+def courses_view(request):
+    return render(request, 'courses.html', {})
+
 def logout_view(request):
     logout(request)
     return redirect("/")
