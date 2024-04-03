@@ -19,6 +19,11 @@ urlpatterns = [
     path('profile/', views.profile_view, name='profile'),
     path('futureplan/', views.future_plan_view, name='futureplan'),
     path("logout", views.logout_view),
+<<<<<<< HEAD
     path("courses/<str:course_code>/", views.courseview, name = 'course_detail'),
     path('courses/', views.course_list_view, name='course_list'),
+=======
+    path("courses/<str:course_code>/", views.courseview, name = 'course_details'),
+    path('courses/', views.courses_view, name='courses'),
+>>>>>>> refs/remotes/origin/main
 ]  
