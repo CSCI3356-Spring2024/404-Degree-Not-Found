@@ -1,0 +1,24 @@
+<!-- course_list_view.html -->
+{% extends 'Header.html' %}
+
+{% block content %}
+    <div class="search-container">
+        <form method="get" action="{% url 'Plan:course_list' %}">
+            <input type="text" name="course_code" placeholder="Enter course code, e.g., CSCI">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class="course-list">
+        {% for course in courses %}
+            <div class="course">
+                <h2>{{ course.title }}</h2>
+                <p><strong>Code:</strong> {{ course.course_code }}</p>
+                <p><strong>Name:</strong> {{ course.name }}</p>
+                <p>{{ course.description }}</p>
+            </div>
+        {% empty %}
+            <p>No courses found for '{{ course_code }}'.</p>
+        {% endfor %}
+    </div>
+{% endblock %}
