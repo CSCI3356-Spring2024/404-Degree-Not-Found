@@ -20,5 +20,4 @@ urlpatterns = [
     path('futureplan/', views.future_plan_view, name='futureplan'),
     path("logout", views.logout_view),
     path("courses/<str:course_code>/", views.courseview, name = 'course_detail'),
-    path('courses/', views.course_list_view, name='course_list'),
-]  
+    path('courselist/', views.course_list_view, name='course_list'),
