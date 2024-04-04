@@ -71,8 +71,8 @@ def profile_view(request):
 def future_plan_view(request):
     return render(request, 'futureplan.html', {})
 
-def courses_view(request):
-    return render(request, 'Courses.html', {})
+# def courses_view(request):
+#     return render(request, 'Courses.html', {})
 
 def logout_view(request):
     logout(request)
@@ -80,10 +80,10 @@ def logout_view(request):
 
 def courseview(request, course_code):
     course_details = fetch_course_data(course_code)
-    return render(request, 'courseview.html', {'course': course_details})
+    return render(request, 'course_detail.html', {'course': course_details})
 
 
 def course_list_view(request):
     course_code = request.GET.get('course_code', '')
     courses = fetch_courses(course_code) if course_code else []
-    return render(request, 'course_list_view.html', {'courses': courses, 'course_code': course_code})
+    return render(request, 'course_list.html', {'courses': courses, 'course_code': course_code})
