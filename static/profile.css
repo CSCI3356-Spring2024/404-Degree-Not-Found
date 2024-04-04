@@ -1,4 +1,8 @@
-/* CSS for form fields */
+body {
+    margin: 0;
+    padding: 0;
+}
+
 p {
     margin-bottom: 15px;
 }

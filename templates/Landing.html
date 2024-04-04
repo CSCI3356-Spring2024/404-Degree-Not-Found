@@ -1,36 +1,39 @@
-{% extends 'Header.html' %}
+{% include 'Header.html' %}
 
 {% load static %}
-{% block content %}
-<link rel="stylesheet" href="{% static 'Landing.css' %}">
-<div class="container">
-    <div class="left-side">
-        <h1>Progress Overview for {{student.first_name}} {{student.last_name}}</h1>
-        <h2>Major</h2>
-        <div class="rectangle">{{student.major}}</div>
-        {% if student.major2 != "None" %}
-        <div class="rectangle">{{student.major2}}</div>
-        {% endif %}
-        {% if student.minor != "None" or student.minor2 != "None"%}
-        <h3>Minors</h3>
-        {% endif %}
-        {% if student.minor != "None" %}
-        <div class="rectangle">{{student.minor}}</div>
-        {% endif %}
-        {% if student.minor2 != "None" %}
-        <div class="rectangle">{{student.minor2}}</div>
-        {% endif %}
-        <h3>University Core</h3>
-        <div class="rectangle">0%</div>
-        <h3>Total Credits</h3>
-        <div class="rectangle">0%</div>
-    </div>
-    <div class="right-side">
-        <div class="button-container">
-            <a href="{% url 'Plan:futureplan' %}" class="button">Plan 1</a>
-            <a href="{% url 'Plan:futureplan' %}" class="button">Plan 2</a>
-            <a href="{% url 'Plan:futureplan' %}" class="button">Plan 3</a>
+<head>
+    <link rel="stylesheet" href="{% static 'landing.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="left-side">
+            <h1>Progress Overview for {{student.first_name}} {{student.last_name}}</h1>
+            <h2>Major</h2>
+            <div class="rectangle">{{student.major}}</div>
+            {% if student.major2 != "None" %}
+            <div class="rectangle">{{student.major2}}</div>
+            {% endif %}
+            {% if student.minor != "None" or student.minor2 != "None"%}
+            <h3>Minors</h3>
+            {% endif %}
+            {% if student.minor != "None" %}
+            <div class="rectangle">{{student.minor}}</div>
+            {% endif %}
+            {% if student.minor2 != "None" %}
+            <div class="rectangle">{{student.minor2}}</div>
+            {% endif %}
+            <h3>University Core</h3>
+            <div class="rectangle">0%</div>
+            <h3>Total Credits</h3>
+            <div class="rectangle">0%</div>
+        </div>
+        <div class="right-side">
+            <div class="button-container">
+                <a href="{% url 'Plan:futureplan' %}" class="button">Plan 1</a>
+                <a href="{% url 'Plan:futureplan' %}" class="button">Plan 2</a>
+                <a href="{% url 'Plan:futureplan' %}" class="button">Plan 3</a>
+            </div>
         </div>
     </div>
-</div>
-{% endblock %}
+</body>
+

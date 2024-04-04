@@ -1,0 +1,10 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.body_container {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}

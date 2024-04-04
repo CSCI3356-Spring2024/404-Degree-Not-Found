@@ -1,43 +1,51 @@
 <!-- course_list_view.html -->
-{% extends 'Header.html' %}
+{% include 'Header.html' %}
 
-{% block content %}
-    <div class="search-container">
-        <form method="get" action="{% url 'Plan:course_list' %}">
-            <input type="text" name="course_code" placeholder="Enter course code, e.g., CSCI">
-            <button type="submit">Search</button>
-        </form>
-    </div>
+{% load static %}
+<head>
+    <link rel="stylesheet" href="{% static '/course_list.css' %}">
+</head>
+<body>
+    <div class="body_container">
+        <div class="search-container">
+            <form method="get" action="{% url 'Plan:course_list' %}">
+                <input type="text" name="course_code" placeholder="Enter course code, e.g., CSCI">
+                <button type="submit">Search</button>
+            </form>
+        </div>
 
-    <div class="course-list">
-        {% for course in courses %}
-            <div class="course">
-                <h2>{{ course.title }}</h2>
-                <p><strong>Code:</strong> {{ course.course_code }}</p>
-                <p><strong>Name:</strong> {{ course.name }}</p>
-                <p>{{ course.description }}</p>
-            </div>
-        {% empty %}
-            <p>No courses found for '{{ course_code }}'.</p>
-        {% endfor %}
-    </div>
+        <div class="course-list">
+            {% for course in courses %}
+                <div class="course">
+                    <h2>{{ course.title }}</h2>
+                    <p><strong>Code:</strong> {{ course.course_code }}</p>
+                    <p><strong>Name:</strong> {{ course.name }}</p>
+                    <p>{{ course.description }}</p>
+                        <!-- Filler Button -->
+                    <button class="add_button">Add to Plan</button>
+                </div>
+            {% empty %}
+                <p>No courses found for '{{ course_code }}'.</p>
+            {% endfor %}
+        </div>
 
-    <!-- links to move between pages-->
-    <div class="pagination">
-        <span class="step-links">
-            {% if courses.has_previous %}
-                <a href="?course_code={{ course_code }}&page=1">&laquo; first</a>
-                <a href="?course_code={{ course_code }}&page={{ courses.previous_page_number }}">previous</a>
-            {% endif %}
-    
-            <span class="current">
-                Page {{ courses.number }} of {{ courses.paginator.num_pages }}.
+        <!-- links to move between pages-->
+        <div class="pagination">
+            <span class="step-links">
+                {% if courses.has_previous %}
+                    <a href="?course_code={{ course_code }}&page=1">&laquo; first</a>
+                    <a href="?course_code={{ course_code }}&page={{ courses.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ courses.number }} of {{ courses.paginator.num_pages }}.
+                </span>
+
+                {% if courses.has_next %}
+                    <a href="?course_code={{ course_code }}&page={{ courses.next_page_number }}">next</a>
+                    <a href="?course_code={{ course_code }}&page={{ courses.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
             </span>
-    
-            {% if courses.has_next %}
-                <a href="?course_code={{ course_code }}&page={{ courses.next_page_number }}">next</a>
-                <a href="?course_code={{ course_code }}&page={{ courses.paginator.num_pages }}">last &raquo;</a>
-            {% endif %}
-        </span>
+        </div>
     </div>
-{% endblock %}
+</body>
