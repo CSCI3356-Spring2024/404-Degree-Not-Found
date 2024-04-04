@@ -21,3 +21,4 @@ urlpatterns = [
     path("logout", views.logout_view),
     path("courses/<str:course_code>/", views.courseview, name = 'course_detail'),
     path('courselist/', views.course_list_view, name='course_list'),
+]

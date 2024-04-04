@@ -7,6 +7,7 @@ from django.contrib.auth import login, logout
 from .forms import EditStudentInfo
 from .models import Student, Admin
 from .api import fetch_course_data, fetch_courses
+from django.core.paginator import Paginator
 
 def signup_view(request):
     if request.method == 'POST':
@@ -52,7 +53,7 @@ def landing_view(request):
         student = Student(first_name=user.first_name, last_name=user.last_name, email=user.email)
         student.save()
         return redirect('Plan:profile')
- 	#return HttpResponse('<h1>Hello World</h1>') #string of HTML code
+
     return render(request, 'Landing.html', {'student': student}) 
 
 def profile_view(request):
@@ -66,10 +67,12 @@ def profile_view(request):
     else:
         form = EditStudentInfo(instance=student)
     
-    return render(request, 'profile.html', {'form': form})
+    return render(request, 'profile.html', {'form': form, 'student': student})
 
 def future_plan_view(request):
-    return render(request, 'futureplan.html', {})
+    user = request.user
+    student = Student.objects.get(email=user.email)
+    return render(request, 'futureplan.html', {'student': student})
 
 # def courses_view(request):
 #     return render(request, 'Courses.html', {})
@@ -85,5 +88,11 @@ def courseview(request, course_code):
 
 def course_list_view(request):
     course_code = request.GET.get('course_code', '')
-    courses = fetch_courses(course_code) if course_code else []
+    courses_list = fetch_courses(course_code) if course_code else []
+
+    paginator = Paginator(courses_list, 10)  # Show 10 courses per page.
+
+    page_number = request.GET.get('page')
+    courses = paginator.get_page(page_number)
+
     return render(request, 'course_list.html', {'courses': courses, 'course_code': course_code})

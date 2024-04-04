@@ -1,21 +1,25 @@
-.form-group {
-    margin-bottom: 20px;
+/* CSS for form fields */
+p {
+    margin-bottom: 15px;
 }
 
-.form-label {
+label {
     font-weight: bold;
 }
 
-.form-control {
+select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 3px;
     box-sizing: border-box;
-    outline: none;
+    appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 12px;
 }
 
-.form-control:focus {
+select:focus {
     border: 2px solid #931C22;
 }
 
