@@ -87,6 +87,9 @@ def courseview(request, course_code):
 
 
 def course_list_view(request):
+    user = request.user
+    student = Student.objects.get(email=user.email)
+
     course_code = request.GET.get('course_code', '')
     courses_list = fetch_courses(course_code) if course_code else []
 
@@ -95,4 +98,4 @@ def course_list_view(request):
     page_number = request.GET.get('page')
     courses = paginator.get_page(page_number)
 
-    return render(request, 'course_list.html', {'courses': courses, 'course_code': course_code})
+    return render(request, 'course_list.html', {'courses': courses, 'course_code': course_code, "student": student})
