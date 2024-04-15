@@ -3,10 +3,13 @@
 {% load static %}
 <head> 
     <link rel="stylesheet" href="{% static 'login_form.css' %}"> 
-    <!-- <link rel="stylesheet" href="{% static 'header.css' %}"> -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+    </style>
+    <link rel="stylesheet" href="{% static '/style.css' %}">
 </head>
 
-<body>
+<body class="inter-body">
     <header>
         <!-- {% block header %} -->
         <!-- {% include 'header.html' %}  -->
