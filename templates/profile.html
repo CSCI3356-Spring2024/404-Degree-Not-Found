@@ -1,4 +1,6 @@
 {% include 'Header.html' %}
+{% load widget_tweaks %}
+
 
 
 {% load static %}
@@ -11,13 +13,28 @@
     <link rel="stylesheet" href="{% static 'profile.css' %}"> 
 </head>
 <body>
-    <h1>Profile Page</h1>
-    <div>
+    <div class="container">
+        <h1>Profile Page</h1>
+        <div class="form-container">
         <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            {% for field in form %}
+            <div class="form-field">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                <div class="error-message">
+                    {% for error in field.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <!-- {{ form.as_p }} -->
             <button type="submit">Save Changes</button>
         </form>
+        </div>
     </div>
 </body>
 </html>
