@@ -1,11 +1,11 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib.auth import login, logout
-from .forms import EditStudentInfo
-from .models import Student, Admin
+from .forms import EditStudentInfo, AddCourseToPlan
+from .models import Student, Admin, Course, Plan, Semester
 from .api import fetch_course_data, fetch_courses
 from django.core.paginator import Paginator
 
@@ -72,6 +72,34 @@ def profile_view(request):
 def future_plan_view(request):
     user = request.user
     student = Student.objects.get(email=user.email)
+    plan_exists = Plan.objects.filter(user=student).exists()
+
+    if not plan_exists:
+        # Create a new plan for the student
+            new_plan = Plan(user=student)
+            
+            # Retrieve or create a default semester (you may adjust this logic)
+            default_semester_1, created = Semester.objects.get_or_create(semester_number=1)
+            default_semester_2, created = Semester.objects.get_or_create(semester_number=2)
+            default_semester_3, created = Semester.objects.get_or_create(semester_number=3)
+            default_semester_4, created = Semester.objects.get_or_create(semester_number=4)
+            default_semester_5, created = Semester.objects.get_or_create(semester_number=5)
+            default_semester_6, created = Semester.objects.get_or_create(semester_number=6)
+            default_semester_7, created = Semester.objects.get_or_create(semester_number=7)
+            default_semester_8, created = Semester.objects.get_or_create(semester_number=8)
+            
+            # Assign the default semester to semester_1 in the new plan
+            new_plan.semester_1 = default_semester_1
+            new_plan.semester_2 = default_semester_2
+            new_plan.semester_3 = default_semester_3
+            new_plan.semester_4 = default_semester_4
+            new_plan.semester_5 = default_semester_5
+            new_plan.semester_6 = default_semester_6
+            new_plan.semester_7 = default_semester_7
+            new_plan.semester_8 = default_semester_8
+
+            # Save the new plan
+            new_plan.save()
     return render(request, 'futureplan.html', {'student': student})
 
 # def courses_view(request):
@@ -98,4 +126,28 @@ def course_list_view(request):
     page_number = request.GET.get('page')
     courses = paginator.get_page(page_number)
 
-    return render(request, 'course_list.html', {'courses': courses, 'course_code': course_code, "student": student})
+    if request.method == 'POST':
+        form = AddCourseToPlan(request.POST, student=student)
+        if form.is_valid():
+            course_id = request.POST.get('course_id')
+            semester_number = request.POST.get('semester_number')
+            plan_id = request.POST.get('plan_id')
+
+            try:
+                plan = Plan.objects.get(id=plan_id, student=student)
+                course = Course.objects.get(id=course_id)
+                add_course_view(plan, course, semester_number)
+                return redirect('Plan:course_list')  # Redirect to the course list page
+            except (Plan.DoesNotExist, Course.DoesNotExist):
+                return HttpResponseBadRequest("Invalid data provided.")
+    plans = Plan.objects.filter(user=student)
+    form = AddCourseToPlan(student=student, plans=plans)
+    return render(request, 'course_list.html', {'courses': courses, 'course_code': course_code, "student": student, 'plans':plans, 'form': form})
+
+
+def add_course_view(plan, course, semester_number):
+    semester_field = f'semester_{semester_number}'
+    semester = getattr(plan, semester_field)
+    semester.courses.add(course)
+    plan.save()
+

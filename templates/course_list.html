@@ -21,9 +21,16 @@
                     <p><strong>Code:</strong> {{ course.course_code }}</p>
                     <p><strong>Name:</strong> {{ course.name }}</p>
                     <p>{{ course.description }}</p>
-                        <!-- Filler Button -->
-                    <button class="add_button">Add to Plan</button>
+                
+                    <form method="post" action="{% url 'Plan:course_list' %}">
+                        {% csrf_token %}
+                        {{ form.course_id }}
+                        {{ form.plan }}
+                        {{ form.semester }}
+                        <button type="submit" class="add_button">Add to Plan</button>
+                    </form>
                 </div>
+                
             {% empty %}
                 <p>No courses found for '{{ course_code }}'.</p>
             {% endfor %}
