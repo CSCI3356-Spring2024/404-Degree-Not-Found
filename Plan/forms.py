@@ -1,6 +1,34 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Student
+from .models import Student, Plan
+
+class AddCourseToPlan(forms.Form):
+    def __init__(self, *args, **kwargs):
+        SEM_CHOICES = [
+            ('1', 'Freshman Fall'), 
+            ('2', 'Freshman Spring'), 
+            ('3', 'Sophomore Fall'), 
+            ('4', 'Sophomore Spring'), 
+            ('5', 'Junior Fall'), 
+            ('6', 'Junior Spring'), 
+            ('7', 'Senior Fall'), 
+            ('8', 'Senior Spring')
+        ]
+        PLAN_CHOICES = [
+            ('1', 'Plan 1'),
+            ('2', 'Plan 2'), 
+            ('3', 'Plan 3'), 
+        ]
+        plans = kwargs.pop('plans', None)
+        student = kwargs.pop('student', None)
+        super(AddCourseToPlan, self).__init__(*args, **kwargs)
+
+        plans = Plan.objects.filter(user=student)
+        plan_choices = [(plan.id, f'Plan for {plan.user} ({plan.id})') for plan in plans]
+        
+        self.fields['plan'] = forms.ChoiceField(choices=PLAN_CHOICES, label='Select Plan')
+        self.fields['semester'] = forms.ChoiceField(choices=SEM_CHOICES, label='Select Semester')
+        self.fields['course_id'] = forms.IntegerField(widget=forms.HiddenInput())
 
 class EditStudentInfo(forms.ModelForm):
     SCHOOL_CHOICES = [
