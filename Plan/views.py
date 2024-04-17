@@ -71,36 +71,27 @@ def profile_view(request):
 
 def future_plan_view(request):
     user = request.user
-    student = Student.objects.get(email=user.email)
-    plan_exists = Plan.objects.filter(user=student).exists()
+    try:
+        student = Student.objects.get(email=user.email)
+    except Student.DoesNotExist:
+        return render(request, 'error.html', {'message': 'Student not found'})
 
-    if not plan_exists:
-        # Create a new plan for the student
-            new_plan = Plan(user=student)
-            
-            # Retrieve or create a default semester (you may adjust this logic)
-            default_semester_1, created = Semester.objects.get_or_create(semester_number=1)
-            default_semester_2, created = Semester.objects.get_or_create(semester_number=2)
-            default_semester_3, created = Semester.objects.get_or_create(semester_number=3)
-            default_semester_4, created = Semester.objects.get_or_create(semester_number=4)
-            default_semester_5, created = Semester.objects.get_or_create(semester_number=5)
-            default_semester_6, created = Semester.objects.get_or_create(semester_number=6)
-            default_semester_7, created = Semester.objects.get_or_create(semester_number=7)
-            default_semester_8, created = Semester.objects.get_or_create(semester_number=8)
-            
-            # Assign the default semester to semester_1 in the new plan
-            new_plan.semester_1 = default_semester_1
-            new_plan.semester_2 = default_semester_2
-            new_plan.semester_3 = default_semester_3
-            new_plan.semester_4 = default_semester_4
-            new_plan.semester_5 = default_semester_5
-            new_plan.semester_6 = default_semester_6
-            new_plan.semester_7 = default_semester_7
-            new_plan.semester_8 = default_semester_8
+    if not Plan.objects.filter(user=student).exists():
+        new_plan = Plan(user=student)
 
-            # Save the new plan
-            new_plan.save()
+        new_plan.semester_1 = Semester.objects.create(semester_number=1)
+        new_plan.semester_2 = Semester.objects.create(semester_number=2)
+        new_plan.semester_3 = Semester.objects.create(semester_number=3)
+        new_plan.semester_4 = Semester.objects.create(semester_number=4)
+        new_plan.semester_5 = Semester.objects.create(semester_number=5)
+        new_plan.semester_6 = Semester.objects.create(semester_number=6)
+        new_plan.semester_7 = Semester.objects.create(semester_number=7)
+        new_plan.semester_8 = Semester.objects.create(semester_number=8)
+
+        new_plan.save()
+
     return render(request, 'futureplan.html', {'student': student})
+
 
 # def courses_view(request):
 #     return render(request, 'Courses.html', {})
