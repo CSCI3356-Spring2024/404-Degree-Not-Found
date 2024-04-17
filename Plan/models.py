@@ -47,6 +47,7 @@ class Semester(models.Model):
 
 class Plan(models.Model):
     user = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='plans')
+    unique_semesters = models.BooleanField(default=False)
     semester_1 = models.OneToOneField(Semester, related_name='freshman_fall', on_delete=models.CASCADE)
     semester_2 = models.OneToOneField(Semester, related_name='freshman_spring', on_delete=models.CASCADE)
     semester_3 = models.OneToOneField(Semester, related_name='sophomore_fall', on_delete=models.CASCADE)

@@ -69,6 +69,9 @@ def profile_view(request):
     
     return render(request, 'profile.html', {'form': form, 'student': student})
 
+def unique_semesters_needed(request):
+    return request.GET.get('unique_semesters', 'false') == 'true'
+
 def future_plan_view(request):
     user = request.user
     try:
@@ -76,22 +79,38 @@ def future_plan_view(request):
     except Student.DoesNotExist:
         return render(request, 'error.html', {'message': 'Student not found'})
 
+    needs_unique_semesters = request.GET.get('unique_semesters', 'false') == 'true'
+
     if not Plan.objects.filter(user=student).exists():
         new_plan = Plan(user=student)
 
-        new_plan.semester_1 = Semester.objects.create(semester_number=1)
-        new_plan.semester_2 = Semester.objects.create(semester_number=2)
-        new_plan.semester_3 = Semester.objects.create(semester_number=3)
-        new_plan.semester_4 = Semester.objects.create(semester_number=4)
-        new_plan.semester_5 = Semester.objects.create(semester_number=5)
-        new_plan.semester_6 = Semester.objects.create(semester_number=6)
-        new_plan.semester_7 = Semester.objects.create(semester_number=7)
-        new_plan.semester_8 = Semester.objects.create(semester_number=8)
+        if needs_unique_semesters:
+            # Create new semester instances to ensure they are unique
+            for i in range(1, 9):
+                semester = Semester.objects.create(semester_number=Semester.objects.count() + 1)
+                setattr(new_plan, f'semester_{i}', semester)
+        else:
+            # Attempt to reuse semesters; this block needs careful handling
+            # to ensure it doesn't violate the unique constraint
+            for i in range(1, 9):
+                semester, _ = Semester.objects.get_or_create(semester_number=i)
+                setattr(new_plan, f'semester_{i}', semester)
 
         new_plan.save()
 
     return render(request, 'futureplan.html', {'student': student})
 
+def semester_is_linked(semester):
+    return any([
+        hasattr(semester, 'freshman_fall'),
+        hasattr(semester, 'freshman_spring'),
+        hasattr(semester, 'sophomore_fall'),
+        hasattr(semester, 'sophomore_spring'),
+        hasattr(semester, 'junior_fall'),
+        hasattr(semester, 'junior_spring'),
+        hasattr(semester, 'senior_fall'),
+        hasattr(semester, 'senior_spring'),
+    ])
 
 # def courses_view(request):
 #     return render(request, 'Courses.html', {})
