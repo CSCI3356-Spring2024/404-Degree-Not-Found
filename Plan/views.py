@@ -8,6 +8,7 @@ from .forms import EditStudentInfo, AddCourseToPlan
 from .models import Student, Admin, Course, Plan, Semester
 from .api import fetch_course_data, fetch_courses
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 def signup_view(request):
     if request.method == 'POST':
@@ -84,21 +85,34 @@ def future_plan_view(request):
     if not Plan.objects.filter(user=student).exists():
         new_plan = Plan(user=student)
 
-        if needs_unique_semesters:
-            # Create new semester instances to ensure they are unique
-            for i in range(1, 9):
-                semester = Semester.objects.create(semester_number=Semester.objects.count() + 1)
-                setattr(new_plan, f'semester_{i}', semester)
-        else:
-            # Attempt to reuse semesters; this block needs careful handling
-            # to ensure it doesn't violate the unique constraint
-            for i in range(1, 9):
-                semester, _ = Semester.objects.get_or_create(semester_number=i)
-                setattr(new_plan, f'semester_{i}', semester)
+        for i in range(1, 9):
+            if needs_unique_semesters:
+                highest_number = Semester.objects.order_by('-semester_number').first()
+                max_number = highest_number.semester_number if highest_number else 0
+                semester = Semester.objects.create(semester_number=max_number + 1)
+            else:
+                semester, created = Semester.objects.get_or_create(semester_number=i)
+                if not created:
+                    linked_plan_exists = Plan.objects.filter(
+                        Q(semester_1=semester) |
+                        Q(semester_2=semester) |
+                        Q(semester_3=semester) |
+                        Q(semester_4=semester) |
+                        Q(semester_5=semester) |
+                        Q(semester_6=semester) |
+                        Q(semester_7=semester) |
+                        Q(semester_8=semester)
+                    ).exists()
+                    if linked_plan_exists:
+                        highest_number = Semester.objects.order_by('-semester_number').first()
+                        max_number = highest_number.semester_number if highest_number else 0
+                        semester = Semester.objects.create(semester_number=max_number + 1)
 
+            setattr(new_plan, f'semester_{i}', semester)
         new_plan.save()
 
     return render(request, 'futureplan.html', {'student': student})
+
 
 def semester_is_linked(semester):
     return any([
