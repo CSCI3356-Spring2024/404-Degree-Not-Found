@@ -75,16 +75,6 @@ def profile_view(request):
 def unique_semesters_needed(request):
     return request.GET.get('unique_semesters', 'false') == 'true'
 
-#this function is very broken,
-def future_plan_view(request):
-    user = request.user
-    try:
-        student = Student.objects.get(email=user.email)
-    except Student.DoesNotExist:
-        return render(request, 'error.html', {'message': 'Student not found'})
-
-    return render(request, 'futureplan.html', {'student': student})
-
 def logout_view(request):
     logout(request)
     return redirect("/")
@@ -92,6 +82,30 @@ def logout_view(request):
 def courseview(request, course_code):
     course_details = fetch_course_data(course_code)
     return render(request, 'course_detail.html', {'course': course_details})
+
+def future_plan_view(request, plan_number):
+    user = request.user
+    try:
+        student = Student.objects.get(email=user.email)
+    except Student.DoesNotExist:
+        return render(request, 'error.html', {'message': 'Student not found'})
+
+    # Check if the plan exists, if not, create it
+    plan_instances = Plan.objects.filter(user=student)
+    if not plan_instances.exists():
+        for plan_number in range(1, 4):
+            Plan.objects.create(user=student, plan_number=plan_number)
+
+    # Retrieve the specific plan based on the plan number
+    try:
+        plan = Plan.objects.get(user=student, plan_number=plan_number)
+    except Plan.DoesNotExist:
+        return render(request, 'error.html', {'message': 'Plan not found'})
+
+    # Retrieve all semesters associated with the plan
+    semesters = plan.semesters.all()
+
+    return render(request, 'futureplan.html', {'student': student, 'semesters': semesters})
 
 
 def course_list_view(request):
@@ -104,14 +118,9 @@ def course_list_view(request):
     page_number = request.GET.get('page')
     courses = paginator.get_page(page_number)
 
+    # Fetch plan instances for the student
     plan_instances = Plan.objects.filter(user=student)
     semester_instances = Semester.objects.all()
-
-    if not plan_instances.exists():
-        for plan_number in range(1, 4):
-            Plan.objects.create(user=student, plan_number=plan_number)
-
-        plan_instances = Plan.objects.filter(user=student)
 
     if request.method == 'POST':
         form = AddCourseToPlan(request.POST)
@@ -127,7 +136,7 @@ def course_list_view(request):
 
     else:
         form = AddCourseToPlan()
-        
+
     return render(request, 'course_list.html', {
         'courses': courses,
         'course_code': course_code,
