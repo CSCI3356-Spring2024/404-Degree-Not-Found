@@ -1,30 +1,62 @@
 {% extends 'Header.html' %}
 
 {% load static %}
+
 {% block content %}
 <div class="body_container">
     <h1>Course Requirements for Majors</h1>
 
-    <form method="get" action="">
-        <select name="major" class="search-container">
-            <option value="">Select a major</option>
-            {% for major in MAJOR_COURSE_MAP.keys %}
-            <option value="{{ major }}" {% if major == request.GET.major %}selected{% endif %}>{{ major }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">Search</button>
-    </form>
+    <div class="search-container">
+        <form method="get" action="">
+            <select name="major" class="search-input">
+                <option value="">Select a major</option>
+                {% for major in MAJOR_COURSE_MAP.keys %}
+                <option value="{{ major }}" {% if major == request.GET.major %}selected{% endif %}>{{ major }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Search</button>
+        </form>
+    </div>
 
     <div class="course-list">
-        {% if courses %}
-            {% for course in courses %}
+        {% if page_obj %}
+            {% for course in page_obj %}
                 <div class="course">
                     <h2>{{ course.title }}</h2>
                     <p><strong>Code:</strong> {{ course.course_code }}</p>
                     <p><strong>Name:</strong> {{ course.name }}</p>
                     <p>{{ course.description }}</p>
+                    
+                    <select name="plan">
+                        <option value="1">Plan 1</option>
+                        <option value="2">Plan 2</option>
+                        <option value="3">Plan 3</option>
+                    </select>
+
+                    <select name="semester">
+                        <option value="1">Freshman Fall</option>
+                        <option value="2">Freshman Spring</option>
+                        <option value="3">Sophomore Fall</option>
+                        <option value="4">Sophomore Spring</option>
+                        <option value="5">Junior Fall</option>
+                        <option value="6">Junior Spring</option>
+                        <option value="7">Senior Fall</option>
+                        <option value="8">Senior Spring</option>
+                    </select>
+                    <button type="button" class="add_button">Add to Plan</button>
                 </div>
             {% endfor %}
+
+            <!-- Pagination links -->
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?{{ request.GET.urlencode }}&page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+                <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+                {% if page_obj.has_next %}
+                    <a href="?{{ request.GET.urlencode }}&page={{ page_obj.next_page_number }}">next</a>
+                {% endif %}
+            </div>
         {% else %}
             <p>No courses found for '{{ major }}'.</p>
         {% endif %}
