@@ -28,7 +28,7 @@ class AddCourseToPlan(forms.Form):
         
         self.fields['plan'] = forms.ChoiceField(choices=PLAN_CHOICES, label='Select Plan')
         self.fields['semester'] = forms.ChoiceField(choices=SEM_CHOICES, label='Select Semester')
-        self.fields['course_id'] = forms.IntegerField(widget=forms.HiddenInput())
+        self.fields['course_id'] = forms.CharField(widget=forms.HiddenInput())
 
 class EditStudentInfo(forms.ModelForm):
     SCHOOL_CHOICES = [

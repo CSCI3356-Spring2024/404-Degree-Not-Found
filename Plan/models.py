@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
 
@@ -47,6 +48,7 @@ class Semester(models.Model):
 
 class Plan(models.Model):
     user = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='plans')
+    plan_number = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(3)])
     unique_semesters = models.BooleanField(default=False)
     semester_1 = models.OneToOneField(Semester, related_name='freshman_fall', on_delete=models.CASCADE)
     semester_2 = models.OneToOneField(Semester, related_name='freshman_spring', on_delete=models.CASCADE)

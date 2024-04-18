@@ -24,7 +24,7 @@
                 
                     <form method="post" action="{% url 'Plan:course_list' %}">
                         {% csrf_token %}
-                        {{ form.course_id }}
+                        <input type="hidden" name="course_id" value="{{ course.course_code }}">
                         {{ form.plan }}
                         {{ form.semester }}
                         <button type="submit" class="add_button">Add to Plan</button>

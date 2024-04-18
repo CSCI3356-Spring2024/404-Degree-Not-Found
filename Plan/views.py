@@ -151,16 +151,23 @@ def course_list_view(request):
     courses = paginator.get_page(page_number)
 
     if request.method == 'POST':
-        form = AddCourseToPlan(request.POST, student=student)
+        form = AddCourseToPlan(request.POST, student=student, initial={'course_id': course_code})
         if form.is_valid():
             course_id = request.POST.get('course_id')
-            semester_number = request.POST.get('semester_number')
-            plan_id = request.POST.get('plan_id')
-
+            semester_number = request.POST.get('semester')
+            plan_id = request.POST.get('plan')
+            print(request.POST)
+            print(course_id,semester_number,plan_id)
             try:
-                plan = Plan.objects.get(id=plan_id, student=student)
-                course = Course.objects.get(id=course_id)
+                print(0)
+                print(plan_id, student.id)
+                plan = Plan.objects.get(plan_number=plan_id, user_id=student.id)
+                print(1)
+                print(course_id)
+                course = Course.objects.get(code=course_id)
+                print(2)
                 add_course_view(plan, course, semester_number)
+                print(3)
                 return redirect('Plan:course_list')  # Redirect to the course list page
             except (Plan.DoesNotExist, Course.DoesNotExist):
                 return HttpResponseBadRequest("Invalid data provided.")
