@@ -142,7 +142,6 @@ def courseview(request, course_code):
 def course_list_view(request):
     user = request.user
     student = Student.objects.get(email=user.email)
-
     course_code = request.GET.get('course_code', '')
     courses_list = fetch_courses(course_code) if course_code else []
 
@@ -170,23 +169,31 @@ def course_list_view(request):
     plans = Plan.objects.filter(user=student)
     form = AddCourseToPlan(student=student, plans=plans)
     return render(request, 'course_list.html', {'courses': courses, 'course_code': course_code, "student": student, 'plans':plans, 'form': form})
-
+import logging
+logger = logging.getLogger(__name__)
 def save_course_in_semester(user_id, plan_number, semester_number, course_code, slotnumber):
     try:
+        print(6)
         # Step 1: Retrieve the Semester ID from the Plan Model
         plan = Plan.objects.get(user_id=user_id, plan_number=plan_number)
         semester_id = getattr(plan, f'semester_{semester_number}_id')
-        
+
+        print(7)
         if semester_id is None:
             # Handle the case where the semester ID is not found
             # (e.g., if the user does not have a plan for the specified semester)
             return None
-
+        print(8)
         # Step 2: Save a Course in the Semester Model (in course1)
         semester = Semester.objects.get(id=semester_id)
-        setattr(Semester, f'course_{slotnumber}_code', course_code)
-        semester.save()
+        print(9)
+        setattr(semester, f'course_{slotnumber}_code', course_code)
+        # coursecodes = [semester.course_1_code,semester.course_2_code,semester.course_3_code,semester.course_4_code,semester.course_5_code]
+        # print(coursecodes[slotnumber-1])
+        # coursecodes[slotnumber-1] = course_code
 
+        print(10)
+        semester.save()
         return semester  # Optionally, return the updated semester object
     except ObjectDoesNotExist:
         # Handle the case where either Plan or Semester object does not exist
