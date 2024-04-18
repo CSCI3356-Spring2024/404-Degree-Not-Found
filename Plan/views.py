@@ -148,16 +148,22 @@ def course_list_view(request):
 
 def reqs_list_view(request):
     major = request.GET.get('major', '')
-    courses_details = []
+    all_courses = []
 
     if major in MAJOR_COURSE_MAP:
         course_codes = MAJOR_COURSE_MAP[major]
-        courses_details = [fetch_course_data(code) for code in course_codes if fetch_course_data(code)]
+        for code in course_codes:
+            courses_for_code = fetch_courses(code)
+            all_courses.extend(courses_for_code) 
+
+    page_number = request.GET.get('page', 1)
+    paginator = Paginator(all_courses, 10)  # Show 10 courses per page
+    page_obj = paginator.get_page(page_number)
 
     return render(request, 'reqs_list.html', {
         'major': major,
-        'courses': courses_details,
-        'MAJOR_COURSE_MAP' : MAJOR_COURSE_MAP
+        'page_obj': page_obj, 
+        'MAJOR_COURSE_MAP': MAJOR_COURSE_MAP
     })
 
 
