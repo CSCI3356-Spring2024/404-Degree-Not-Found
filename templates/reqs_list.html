@@ -27,23 +27,30 @@
                     <p><strong>Name:</strong> {{ course.name }}</p>
                     <p>{{ course.description }}</p>
                     
-                    <select name="plan">
-                        <option value="1">Plan 1</option>
-                        <option value="2">Plan 2</option>
-                        <option value="3">Plan 3</option>
-                    </select>
+                    <form method="post" action="{% url 'Plan:reqs_list' %}"> 
+                        {% csrf_token %}
+                        <input type="hidden" name="course_code" value="{{ course.course_code }}">
+                        <input type="hidden" name="course_name" value="{{ course.title }}">
+                        <input type="hidden" name="course_description" value="{{ course.description }}">
 
-                    <select name="semester">
-                        <option value="1">Freshman Fall</option>
-                        <option value="2">Freshman Spring</option>
-                        <option value="3">Sophomore Fall</option>
-                        <option value="4">Sophomore Spring</option>
-                        <option value="5">Junior Fall</option>
-                        <option value="6">Junior Spring</option>
-                        <option value="7">Senior Fall</option>
-                        <option value="8">Senior Spring</option>
-                    </select>
-                    <button type="button" class="add_button">Add to Plan</button>
+                        <select name="plan">
+                            <option value="1">Plan 1</option>
+                            <option value="2">Plan 2</option>
+                            <option value="3">Plan 3</option>
+                        </select>
+
+                        <select name="semester">
+                            <option value="1">Freshman Fall</option>
+                            <option value="2">Freshman Spring</option>
+                            <option value="3">Sophomore Fall</option>
+                            <option value="4">Sophomore Spring</option>
+                            <option value="5">Junior Fall</option>
+                            <option value="6">Junior Spring</option>
+                            <option value="7">Senior Fall</option>
+                            <option value="8">Senior Spring</option>
+                        </select>
+                        <button type="submit" class="add_button">Add to Plan</button>
+                    </form>
                 </div>
             {% endfor %}
 
