@@ -19,14 +19,16 @@
                 <div class="course">
                     <h2>{{ course.title }}</h2>
                     <p><strong>Code:</strong> {{ course.course_code }}</p>
-                    <p><strong>Name:</strong> {{ course.name }}</p>
+                    <p><strong>Credits:</strong> {{ course.credits }}</p>
                     <p>{{ course.description }}</p>
                 
                     <form method="post" action="{% url 'Plan:course_list' %}">
                         {% csrf_token %}
-                        <input type="hidden" name="course_id" value="{{ course.course_code }}">
-                        {{ form.plan }}
-                        {{ form.semester }}
+                        <input type="hidden" name="code" value="{{ course.course_code }}">
+                        <input type="hidden" name="name" value="{{ course.title }}">
+                        <input type="hidden" name="credits" value="{{ course.credits }}">
+                        {{ form.selected_plan }}
+                        {{ form.selected_semester }}
                         <button type="submit" class="add_button">Add to Plan</button>
                     </form>
                 </div>

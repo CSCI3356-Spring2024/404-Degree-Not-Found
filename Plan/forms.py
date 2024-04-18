@@ -1,34 +1,46 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Student, Plan
+from .models import Student, Course, Semester, Plan
 
 class AddCourseToPlan(forms.Form):
-    def __init__(self, *args, **kwargs):
-        SEM_CHOICES = [
-            ('1', 'Freshman Fall'), 
-            ('2', 'Freshman Spring'), 
-            ('3', 'Sophomore Fall'), 
-            ('4', 'Sophomore Spring'), 
-            ('5', 'Junior Fall'), 
-            ('6', 'Junior Spring'), 
-            ('7', 'Senior Fall'), 
-            ('8', 'Senior Spring')
-        ]
-        PLAN_CHOICES = [
-            ('1', 'Plan 1'),
-            ('2', 'Plan 2'), 
-            ('3', 'Plan 3'), 
-        ]
-        plans = kwargs.pop('plans', None)
-        student = kwargs.pop('student', None)
-        super(AddCourseToPlan, self).__init__(*args, **kwargs)
+    name = forms.CharField(max_length=255)
+    code = forms.CharField(max_length=20)
+    credits = forms.IntegerField(initial=3)
+    selected_semester = forms.ChoiceField(label='Select Semester', choices=[
+        ('1', 'Freshman Fall'),
+        ('2', 'Freshman Spring'),
+        ('3', 'Sophomore Fall'),
+        ('4', 'Sophomore Spring'),
+        ('5', 'Junior Fall'),
+        ('6', 'Junior Spring'),
+        ('7', 'Senior Fall'),
+        ('8', 'Senior Spring'),
+    ], required=False)
+    selected_plan = forms.ChoiceField(label='Select Plan', choices=[
+        ('1', 'Plan 1'),
+        ('2', 'Plan 2'),
+        ('3', 'Plan 3'),
+    ], required=False)
 
-        plans = Plan.objects.filter(user=student)
-        plan_choices = [(plan.id, f'Plan for {plan.user} ({plan.id})') for plan in plans]
-        
-        self.fields['plan'] = forms.ChoiceField(choices=PLAN_CHOICES, label='Select Plan')
-        self.fields['semester'] = forms.ChoiceField(choices=SEM_CHOICES, label='Select Semester')
-        self.fields['course_id'] = forms.CharField(widget=forms.HiddenInput())
+    def save(self, student):
+        name = self.cleaned_data['name']
+        code = self.cleaned_data['code']
+        credits = self.cleaned_data['credits']
+        semester_num = self.cleaned_data['selected_semester']
+        selected_plan_choice = self.cleaned_data['selected_plan']
+
+        course, course_created = Course.objects.get_or_create(name=name, code=code, credits=credits)
+        plan = Plan.objects.get(user=student, plan_number=selected_plan_choice)
+
+        semester = Semester.objects.filter(semester_num=semester_num, plan=plan).first()
+
+        if not semester:
+            semester = Semester.objects.create(semester_num=semester_num, plan=plan)
+
+        if course not in semester.courses.all():
+            semester.courses.add(course)
+
+        return course, semester
 
 class EditStudentInfo(forms.ModelForm):
     SCHOOL_CHOICES = [

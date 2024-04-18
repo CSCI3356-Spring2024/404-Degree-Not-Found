@@ -74,6 +74,7 @@ def profile_view(request):
 def unique_semesters_needed(request):
     return request.GET.get('unique_semesters', 'false') == 'true'
 
+#this function is very broken,
 def future_plan_view(request):
     user = request.user
     try:
@@ -81,54 +82,7 @@ def future_plan_view(request):
     except Student.DoesNotExist:
         return render(request, 'error.html', {'message': 'Student not found'})
 
-    needs_unique_semesters = request.GET.get('unique_semesters', 'false') == 'true'
-
-    if not Plan.objects.filter(user=student).exists():
-        new_plan = Plan(user=student)
-
-        for i in range(1, 9):
-            if needs_unique_semesters:
-                highest_number = Semester.objects.order_by('-semester_number').first()
-                max_number = highest_number.semester_number if highest_number else 0
-                semester = Semester.objects.create(semester_number=max_number + 1)
-            else:
-                semester, created = Semester.objects.get_or_create(semester_number=i)
-                if not created:
-                    linked_plan_exists = Plan.objects.filter(
-                        Q(semester_1=semester) |
-                        Q(semester_2=semester) |
-                        Q(semester_3=semester) |
-                        Q(semester_4=semester) |
-                        Q(semester_5=semester) |
-                        Q(semester_6=semester) |
-                        Q(semester_7=semester) |
-                        Q(semester_8=semester)
-                    ).exists()
-                    if linked_plan_exists:
-                        highest_number = Semester.objects.order_by('-semester_number').first()
-                        max_number = highest_number.semester_number if highest_number else 0
-                        semester = Semester.objects.create(semester_number=max_number + 1)
-
-            setattr(new_plan, f'semester_{i}', semester)
-        new_plan.save()
-
     return render(request, 'futureplan.html', {'student': student})
-
-
-def semester_is_linked(semester):
-    return any([
-        hasattr(semester, 'freshman_fall'),
-        hasattr(semester, 'freshman_spring'),
-        hasattr(semester, 'sophomore_fall'),
-        hasattr(semester, 'sophomore_spring'),
-        hasattr(semester, 'junior_fall'),
-        hasattr(semester, 'junior_spring'),
-        hasattr(semester, 'senior_fall'),
-        hasattr(semester, 'senior_spring'),
-    ])
-
-# def courses_view(request):
-#     return render(request, 'Courses.html', {})
 
 def logout_view(request):
     logout(request)
@@ -146,62 +100,38 @@ def course_list_view(request):
     courses_list = fetch_courses(course_code) if course_code else []
 
     paginator = Paginator(courses_list, 10)  # Show 10 courses per page.
-
     page_number = request.GET.get('page')
     courses = paginator.get_page(page_number)
 
+    plan_instances = Plan.objects.filter(user=student)
+    semester_instances = Semester.objects.all()
+
+    if not plan_instances.exists():
+        for plan_number in range(1, 4):
+            Plan.objects.create(user=student, plan_number=plan_number)
+
+        plan_instances = Plan.objects.filter(user=student)
+
     if request.method == 'POST':
-        form = AddCourseToPlan(request.POST, student=student, initial={'course_id': course_code})
+        form = AddCourseToPlan(request.POST)
+        print("POST data:", request.POST)
+
         if form.is_valid():
-            course_id = request.POST.get('course_id')
-            semester_number = request.POST.get('semester')
-            plan_id = request.POST.get('plan')
-            print(request.POST)
-            print(course_id,semester_number,plan_id)
-            try:
-                print(0)
-                print(student.id, plan_id, semester_number, course_id, 1)
-                save_course_in_semester(student.id, plan_id, semester_number, course_id, 1)
-                
-                return redirect('Plan:course_list')  # Redirect to the course list page
-            except (Plan.DoesNotExist, Course.DoesNotExist):
-                return HttpResponseBadRequest("Invalid data provided.")
-    plans = Plan.objects.filter(user=student)
-    form = AddCourseToPlan(student=student, plans=plans)
-    return render(request, 'course_list.html', {'courses': courses, 'course_code': course_code, "student": student, 'plans':plans, 'form': form})
-import logging
-logger = logging.getLogger(__name__)
-def save_course_in_semester(user_id, plan_number, semester_number, course_code, slotnumber):
-    try:
-        print(6)
-        # Step 1: Retrieve the Semester ID from the Plan Model
-        plan = Plan.objects.get(user_id=user_id, plan_number=plan_number)
-        semester_id = getattr(plan, f'semester_{semester_number}_id')
+            print("Form is valid.")
+            course, semester = form.save(student)
+            print(course)
+            print(semester)
+        else:
+            print("Form is not valid:", form.errors)
 
-        print(7)
-        if semester_id is None:
-            # Handle the case where the semester ID is not found
-            # (e.g., if the user does not have a plan for the specified semester)
-            return None
-        print(8)
-        # Step 2: Save a Course in the Semester Model (in course1)
-        semester = Semester.objects.get(id=semester_id)
-        print(9)
-        setattr(semester, f'course_{slotnumber}_code', course_code)
-        # coursecodes = [semester.course_1_code,semester.course_2_code,semester.course_3_code,semester.course_4_code,semester.course_5_code]
-        # print(coursecodes[slotnumber-1])
-        # coursecodes[slotnumber-1] = course_code
+    else:
+        form = AddCourseToPlan()
 
-        print(10)
-        semester.save()
-        return semester  # Optionally, return the updated semester object
-    except ObjectDoesNotExist:
-        # Handle the case where either Plan or Semester object does not exist
-        return None
-
-# def add_course_view(plan, course, semester_number):
-#     semester_field = f'semester_{semester_number}'
-#     semester = getattr(plan, semester_field)
-#     semester.courses.add(course)
-#     plan.save()
-
+    return render(request, 'course_list.html', {
+        'courses': courses,
+        'course_code': course_code,
+        'student': student,
+        'form': form,
+        'plans': plan_instances,
+        'semester': semester_instances, 
+    })
