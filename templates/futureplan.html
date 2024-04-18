@@ -37,7 +37,7 @@
             <div class="course-rectangle"></div>
             <div class="course-rectangle"></div>
             <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
+            <div the="course-rectangle"></div>
         </div>
         <div class="box">
             <div class="semester-name"><b>Sophomore Spring</b></div>
@@ -61,7 +61,7 @@
             <div class="semester-name"><b>Junior Spring</b></div>
             <div class="course-rectangle"></div>
             <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
+            <div the="course-rectangle"></div>
             <div class="course-rectangle"></div>
             <div class="course-rectangle"></div>
             <div class="course-rectangle"></div>
@@ -70,7 +70,7 @@
             <div class="semester-name"><b>Senior Fall</b></div>
             <div class="course-rectangle"></div>
             <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
+            <div the="course-rectangle"></div>
             <div class="course-rectangle"></div>
             <div class="course-rectangle"></div>
             <div class="course-rectangle"></div>
@@ -79,13 +79,14 @@
             <div class="semester-name"><b>Senior Spring</b></div>
             <div class="course-rectangle"></div>
             <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
+            <div the="course-rectangle"></div>
             <div class="course-rectangle"></div>
             <div class="course-rectangle"></div>
             <div class="course-rectangle"></div>
         </div>
     </div>
-    <a href="{% url 'Plan:course_list' %}" class="courses-button">Add/Edit Courses</a>
+    <a href="{% url 'Plan:course_list' %}" class="courses-button" style="padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px; display: inline-block; margin: 5px;">Add/Edit Courses</a>
+    <a href="{% url 'Plan:reqs_list' %}" class="requirements-button" style="padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px; display: inline-block; margin: 5px;">View Requirements</a>
 </body>
 </html>
 {% endblock %}

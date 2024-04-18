@@ -1,0 +1,33 @@
+{% extends 'Header.html' %}
+
+{% load static %}
+{% block content %}
+<div class="body_container">
+    <h1>Course Requirements for Majors</h1>
+
+    <form method="get" action="">
+        <select name="major" class="search-container">
+            <option value="">Select a major</option>
+            {% for major in MAJOR_COURSE_MAP.keys %}
+            <option value="{{ major }}" {% if major == request.GET.major %}selected{% endif %}>{{ major }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Search</button>
+    </form>
+
+    <div class="course-list">
+        {% if courses %}
+            {% for course in courses %}
+                <div class="course">
+                    <h2>{{ course.title }}</h2>
+                    <p><strong>Code:</strong> {{ course.course_code }}</p>
+                    <p><strong>Name:</strong> {{ course.name }}</p>
+                    <p>{{ course.description }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No courses found for '{{ major }}'.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
