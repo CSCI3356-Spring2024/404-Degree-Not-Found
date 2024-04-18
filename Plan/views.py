@@ -127,6 +127,15 @@ def course_list_view(request):
 
     else:
         form = AddCourseToPlan()
+        
+    return render(request, 'course_list.html', {
+        'courses': courses,
+        'course_code': course_code,
+        'student': student,
+        'form': form,
+        'plans': plan_instances,
+        'semester': semester_instances, 
+    })
 
 def reqs_list_view(request):
     major = request.GET.get('major', '')
