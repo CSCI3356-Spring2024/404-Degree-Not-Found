@@ -9,6 +9,7 @@ from .models import Student, Admin, Course, Plan, Semester
 from .api import fetch_course_data, fetch_courses
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 
 def signup_view(request):
     if request.method == 'POST':
@@ -160,14 +161,9 @@ def course_list_view(request):
             print(course_id,semester_number,plan_id)
             try:
                 print(0)
-                print(plan_id, student.id)
-                plan = Plan.objects.get(plan_number=plan_id, user_id=student.id)
-                print(1)
-                print(course_id)
-                course = Course.objects.get(code=course_id)
-                print(2)
-                add_course_view(plan, course, semester_number)
-                print(3)
+                print(student.id, plan_id, semester_number, course_id, 1)
+                save_course_in_semester(student.id, plan_id, semester_number, course_id, 1)
+                
                 return redirect('Plan:course_list')  # Redirect to the course list page
             except (Plan.DoesNotExist, Course.DoesNotExist):
                 return HttpResponseBadRequest("Invalid data provided.")
@@ -175,10 +171,30 @@ def course_list_view(request):
     form = AddCourseToPlan(student=student, plans=plans)
     return render(request, 'course_list.html', {'courses': courses, 'course_code': course_code, "student": student, 'plans':plans, 'form': form})
 
+def save_course_in_semester(user_id, plan_number, semester_number, course_code, slotnumber):
+    try:
+        # Step 1: Retrieve the Semester ID from the Plan Model
+        plan = Plan.objects.get(user_id=user_id, plan_number=plan_number)
+        semester_id = getattr(plan, f'semester_{semester_number}_id')
+        
+        if semester_id is None:
+            # Handle the case where the semester ID is not found
+            # (e.g., if the user does not have a plan for the specified semester)
+            return None
 
-def add_course_view(plan, course, semester_number):
-    semester_field = f'semester_{semester_number}'
-    semester = getattr(plan, semester_field)
-    semester.courses.add(course)
-    plan.save()
+        # Step 2: Save a Course in the Semester Model (in course1)
+        semester = Semester.objects.get(id=semester_id)
+        setattr(Semester, f'course_{slotnumber}_code', course_code)
+        semester.save()
+
+        return semester  # Optionally, return the updated semester object
+    except ObjectDoesNotExist:
+        # Handle the case where either Plan or Semester object does not exist
+        return None
+
+# def add_course_view(plan, course, semester_number):
+#     semester_field = f'semester_{semester_number}'
+#     semester = getattr(plan, semester_field)
+#     semester.courses.add(course)
+#     plan.save()
 

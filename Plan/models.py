@@ -40,24 +40,24 @@ class Course(models.Model):
         return self.name
 
 class Semester(models.Model):
-    semester_number = models.PositiveIntegerField(unique=True)
-    courses = models.ManyToManyField(Course)
-
-    def __str__(self):
-        return f'Semester {self.semester_number}'
+    course_1_code = models.CharField(max_length=50)
+    course_2_code = models.CharField(max_length=50)
+    course_3_code = models.CharField(max_length=50)
+    course_4_code = models.CharField(max_length=50)
+    course_5_code = models.CharField(max_length=50)
 
 class Plan(models.Model):
     user = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='plans')
     plan_number = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(3)])
     unique_semesters = models.BooleanField(default=False)
-    semester_1 = models.OneToOneField(Semester, related_name='freshman_fall', on_delete=models.CASCADE)
-    semester_2 = models.OneToOneField(Semester, related_name='freshman_spring', on_delete=models.CASCADE)
-    semester_3 = models.OneToOneField(Semester, related_name='sophomore_fall', on_delete=models.CASCADE)
-    semester_4 = models.OneToOneField(Semester, related_name='sophomore_spring', on_delete=models.CASCADE)
-    semester_5 = models.OneToOneField(Semester, related_name='junior_fall', on_delete=models.CASCADE)
-    semester_6 = models.OneToOneField(Semester, related_name='junior_spring', on_delete=models.CASCADE)
-    semester_7 = models.OneToOneField(Semester, related_name='senior_fall', on_delete=models.CASCADE)
-    semester_8 = models.OneToOneField(Semester, related_name='senior_spring', on_delete=models.CASCADE)
+    semester_1 = models.ForeignKey(Semester, related_name='freshman_fall', on_delete=models.CASCADE)
+    semester_2 = models.ForeignKey(Semester, related_name='freshman_spring', on_delete=models.CASCADE)
+    semester_3 = models.ForeignKey(Semester, related_name='sophomore_fall', on_delete=models.CASCADE)
+    semester_4 = models.ForeignKey(Semester, related_name='sophomore_spring', on_delete=models.CASCADE)
+    semester_5 = models.ForeignKey(Semester, related_name='junior_fall', on_delete=models.CASCADE)
+    semester_6 = models.ForeignKey(Semester, related_name='junior_spring', on_delete=models.CASCADE)
+    semester_7 = models.ForeignKey(Semester, related_name='senior_fall', on_delete=models.CASCADE)
+    semester_8 = models.ForeignKey(Semester, related_name='senior_spring', on_delete=models.CASCADE)
 
     def __str__(self):
         return f'Plan for {self.user}'
