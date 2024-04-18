@@ -1,12 +1,13 @@
-.courses-button {
-    background-color: #E1F2FF;
-    color: #286897;
-    border: none;
+.courses-button, .requirements-button {
     padding: 10px 20px;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: background-color 0.3s ease; 
+    background-color: #007BFF; /* Blue background */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 5px; 
 }
+
 
 .courses-button:hover {
     background-color: #2979ce;

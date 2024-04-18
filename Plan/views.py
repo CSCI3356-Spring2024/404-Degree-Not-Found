@@ -10,6 +10,7 @@ from .api import fetch_course_data, fetch_courses
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
+from .data import MAJOR_COURSE_MAP
 
 def signup_view(request):
     if request.method == 'POST':
@@ -127,11 +128,18 @@ def course_list_view(request):
     else:
         form = AddCourseToPlan()
 
-    return render(request, 'course_list.html', {
-        'courses': courses,
-        'course_code': course_code,
-        'student': student,
-        'form': form,
-        'plans': plan_instances,
-        'semester': semester_instances, 
+def reqs_list_view(request):
+    major = request.GET.get('major', '')
+    courses_details = []
+
+    if major in MAJOR_COURSE_MAP:
+        course_codes = MAJOR_COURSE_MAP[major]
+        courses_details = [fetch_course_data(code) for code in course_codes if fetch_course_data(code)]
+
+    return render(request, 'reqs_list.html', {
+        'major': major,
+        'courses': courses_details,
+        'MAJOR_COURSE_MAP' : MAJOR_COURSE_MAP
     })
+
+
