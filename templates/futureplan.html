@@ -12,78 +12,36 @@
 <body>
     <h1>Future 4-year plan</h1>
     <div class="container">
-        <div class="box">
-            <div class="semester-name"><b>Freshman Fall</b></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-        </div>
-        <div class="box">
-            <div class="semester-name"><b>Freshman Spring</b></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-        </div>
-        <div class="box">
-            <div class="semester-name"><b>Sophomore Fall</b></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div the="course-rectangle"></div>
-        </div>
-        <div class="box">
-            <div class="semester-name"><b>Sophomore Spring</b></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-        </div>
-        <div class="box">
-            <div class="semester-name"><b>Junior Fall</b></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-        </div>
-        <div class="box">
-            <div class="semester-name"><b>Junior Spring</b></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div the="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-        </div>
-        <div class="box">
-            <div class="semester-name"><b>Senior Fall</b></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div the="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-        </div>
-        <div class="box">
-            <div class="semester-name"><b>Senior Spring</b></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div the="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-            <div class="course-rectangle"></div>
-        </div>
+        {% for semester_num, courses in courses_by_semester %}
+            <div class="box">
+                <div class="semester-name"><b><div class="semester-name"><b>
+                {% if semester_num == 's1' %}
+                    Freshman Fall
+                {% elif semester_num == 's2' %}
+                    Freshman Spring
+                {% elif semester_num == 's3' %}
+                    Sophomore Fall
+                {% elif semester_num == 's4' %}
+                    Sophomore Spring
+                {% elif semester_num == 's5' %}
+                    Junior Fall
+                {% elif semester_num == 's6' %}
+                    Junior Spring
+                {% elif semester_num == 's7' %}
+                    Senior Fall
+                {% elif semester_num == 's8' %}
+                    Senior Spring
+                {% endif %}
+            </b></div></b></div>
+                {% if courses %}
+                    {% for course in courses %}
+                        <div class="course-rectangle">{{ course }}</div>
+                    {% endfor %}
+                {% else %}
+                    <p>No courses planned for this semester</p>
+                {% endif %}
+            </div>
+        {% endfor %}
     </div>
     <a href="{% url 'Plan:course_list' %}" class="courses-button" style="padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px; display: inline-block; margin: 5px;">Add/Edit Courses</a>
     <a href="{% url 'Plan:reqs_list' %}" class="requirements-button" style="padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px; display: inline-block; margin: 5px;">View Requirements</a>

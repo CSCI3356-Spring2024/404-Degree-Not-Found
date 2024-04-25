@@ -59,7 +59,13 @@ def landing_view(request):
         student.save()
         return redirect('Plan:profile')
 
-    return render(request, 'Landing.html', {'student': student}) 
+    if student.plan_set.count() < 3:
+        for _ in range(3 - student.plan_set.count()):
+            Plan.objects.create(student=student)
+
+    plans = Plan.objects.filter(student=student)
+
+    return render(request, 'Landing.html', {'student': student, 'plans': plans}) 
 
 def profile_view(request):
     user = request.user
@@ -88,8 +94,24 @@ def courseview(request, course_code):
 def future_plan_view(request, plan_number):
     user = request.user
     student = Student.objects.get(email=user.email)
+    plan = get_object_or_404(Plan, student=student, id=plan_number)
 
-    return render(request, 'futureplan.html', {'student': student})
+    semester_names = {
+        's1': 'Freshman Fall',
+        's2': 'Freshman Spring',
+        's3': 'Sophomore Fall',
+        's4': 'Sophomore Spring',
+        's5': 'Junior Fall',
+        's6': 'Junior Spring',
+        's7': 'Senior Fall',
+        's8': 'Senior Spring',
+    }
+
+    semester_nums = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8']
+
+    courses_by_semester = [(semester_num, getattr(plan, semester_num, [])) for semester_num in semester_nums]
+
+    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester': courses_by_semester, 'semester_names': semester_names})
 
 
 def course_list_view(request):
@@ -102,10 +124,6 @@ def course_list_view(request):
     page_number = request.GET.get('page')
     courses = paginator.get_page(page_number)
 
-    if student.plan_set.count() < 3:
-        for _ in range(3 - student.plan_set.count()):
-            Plan.objects.create(student=student)
-        
     if request.method == 'POST':
         form = AddCourseToPlan(request.POST, student=student)
         if form.is_valid():

@@ -29,9 +29,9 @@
         </div>
         <div class="right-side">
             <div class="button-container">
-                <a href="{% url 'Plan:futureplan' 1%}" class="button">Plan 1</a>
-                <a href="{% url 'Plan:futureplan' 2%}" class="button">Plan 2</a>
-                <a href="{% url 'Plan:futureplan' 3%}" class="button">Plan 3</a>
+                {% for plan in plans %}
+                <a href="{% url 'Plan:futureplan' plan.id %}" class="button">Plan {{ forloop.counter }}</a>
+                {% endfor %}
             </div>
         </div>
     </div>

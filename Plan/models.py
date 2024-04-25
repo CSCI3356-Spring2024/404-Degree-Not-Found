@@ -30,13 +30,13 @@ class Admin(User):
 
 class Plan(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, default=None, null=True)
-    s1 = models.JSONField(blank=True, null=True)
-    s2 = models.JSONField(blank=True, null=True)
-    s3 = models.JSONField(blank=True, null=True)
-    s4 = models.JSONField(blank=True, null=True)
-    s5 = models.JSONField(blank=True, null=True)
-    s6 = models.JSONField(blank=True, null=True)
-    s7 = models.JSONField(blank=True, null=True)
-    s8 = models.JSONField(blank=True, null=True)
+    s1 = models.JSONField(blank=True, default=[])
+    s2 = models.JSONField(blank=True, default=[])
+    s3 = models.JSONField(blank=True, default=[])
+    s4 = models.JSONField(blank=True, default=[])
+    s5 = models.JSONField(blank=True, default=[])
+    s6 = models.JSONField(blank=True, default=[])
+    s7 = models.JSONField(blank=True, default=[])
+    s8 = models.JSONField(blank=True, default=[])
 
 
