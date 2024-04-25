@@ -16,22 +16,23 @@ class AddCourseToPlan(forms.Form):
         ('s7', 'Senior Fall'),
         ('s8', 'Senior Spring'),
     ], required=False)
-    selected_plan = forms.ChoiceField(label='Select Plan', choices=[
-        ('1', 'Plan 1'),
-        ('2', 'Plan 2'),
-        ('3', 'Plan 3'),
-    ], required=False)
+    selected_plan = forms.ChoiceField(label='Select Plan', choices=[], required=False)
+
+    def __init__(self, *args, **kwargs):
+        student = kwargs.pop('student')
+        super(AddCourseToPlan, self).__init__(*args, **kwargs)
+        plans = Plan.objects.filter(student=student)
+        plan_choices = [(plan.id, f'Plan {index+1}') for index, plan in enumerate(plans, start=0)]
+        self.fields['selected_plan'].choices = plan_choices
 
     def save(self, student):
         code = self.cleaned_data['code']
         semester_num = self.cleaned_data['selected_semester']
-        selected_plan_choice = self.cleaned_data['selected_plan']
+        selected_plan_id = self.cleaned_data['selected_plan']
         
         try:
-            # Get the selected plan for the student
-            selected_plan = Plan.objects.get(id=selected_plan_choice, student=student)
+            selected_plan = Plan.objects.get(id=selected_plan_id, student=student)
         except Plan.DoesNotExist:
-            # Handle the case where the selected plan does not exist for the current student
             raise forms.ValidationError("Selected plan does not exist for the current student.")
         
         # Add the course code to the selected semester field of the plan
@@ -42,10 +43,7 @@ class AddCourseToPlan(forms.Form):
             elif len(semester_field) < 5:
                 semester_field.append(code)
             else:
-                # Handle the case where the selected semester is already full
                 raise forms.ValidationError("Selected semester is already full.")
-            
-            # Save the updated plan
             selected_plan.save()
         else:
             raise forms.ValidationError("Invalid semester selected.")

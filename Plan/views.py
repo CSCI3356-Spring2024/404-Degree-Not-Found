@@ -101,15 +101,19 @@ def course_list_view(request):
     paginator = Paginator(courses_list, 10)  # Show 10 courses per page.
     page_number = request.GET.get('page')
     courses = paginator.get_page(page_number)
+
+    if student.plan_set.count() < 3:
+        for _ in range(3 - student.plan_set.count()):
+            Plan.objects.create(student=student)
         
     if request.method == 'POST':
-        form = AddCourseToPlan(request.POST)
+        form = AddCourseToPlan(request.POST, student=student)
         if form.is_valid():
             try:
-                # Call the save method of the form, passing the student object
                 form.save(student)
+                print("Form data:", form.cleaned_data)
+                print("Course added to the plan successfully.")
             except ValidationError as e:
-                # Handle form validation errors
                 return render(request, 'course_list.html', {
                     'courses': courses,
                     'course_code': course_code,
@@ -117,9 +121,14 @@ def course_list_view(request):
                     'form': form,
                     'error_message': e.message,
                 })
+        else:
+            form = AddCourseToPlan(student=student)
+            print("Form errors:", form.errors)
+            print("Course not added to plan")
     else:
-        form = AddCourseToPlan()
-    
+        form = AddCourseToPlan(student=student) 
+        print("Request method is not POST")
+
     return render(request, 'course_list.html', {
         'courses': courses,
         'course_code': course_code,
