@@ -5,12 +5,14 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib.auth import login, logout
 from .forms import EditStudentInfo, AddCourseToPlan
-from .models import Student, Admin, Course, Plan, Semester
+from .models import Student, Admin, Plan
 from .api import fetch_course_data, fetch_courses
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from .data import MAJOR_COURSE_MAP
+from django.core.exceptions import ValidationError
+
 
 def signup_view(request):
     if request.method == 'POST':
@@ -85,27 +87,9 @@ def courseview(request, course_code):
 
 def future_plan_view(request, plan_number):
     user = request.user
-    try:
-        student = Student.objects.get(email=user.email)
-    except Student.DoesNotExist:
-        return render(request, 'error.html', {'message': 'Student not found'})
+    student = Student.objects.get(email=user.email)
 
-    # Check if the plan exists, if not, create it
-    plan_instances = Plan.objects.filter(user=student)
-    if not plan_instances.exists():
-        for plan_number in range(1, 4):
-            Plan.objects.create(user=student, plan_number=plan_number)
-
-    # Retrieve the specific plan based on the plan number
-    try:
-        plan = Plan.objects.get(user=student, plan_number=plan_number)
-    except Plan.DoesNotExist:
-        return render(request, 'error.html', {'message': 'Plan not found'})
-
-    # Retrieve all semesters associated with the plan
-    semesters = plan.semesters.all()
-
-    return render(request, 'futureplan.html', {'student': student, 'semesters': semesters})
+    return render(request, 'futureplan.html', {'student': student})
 
 
 def course_list_view(request):
@@ -117,33 +101,30 @@ def course_list_view(request):
     paginator = Paginator(courses_list, 10)  # Show 10 courses per page.
     page_number = request.GET.get('page')
     courses = paginator.get_page(page_number)
-
-    # Fetch plan instances for the student
-    plan_instances = Plan.objects.filter(user=student)
-    semester_instances = Semester.objects.all()
-
+        
     if request.method == 'POST':
         form = AddCourseToPlan(request.POST)
-        print("POST data:", request.POST)
-
         if form.is_valid():
-            print("Form is valid.")
-            course, semester = form.save(student)
-            print(course)
-            print(semester)
-        else:
-            print("Form is not valid:", form.errors)
-
+            try:
+                # Call the save method of the form, passing the student object
+                form.save(student)
+            except ValidationError as e:
+                # Handle form validation errors
+                return render(request, 'course_list.html', {
+                    'courses': courses,
+                    'course_code': course_code,
+                    'student': student,
+                    'form': form,
+                    'error_message': e.message,
+                })
     else:
         form = AddCourseToPlan()
-
+    
     return render(request, 'course_list.html', {
         'courses': courses,
         'course_code': course_code,
         'student': student,
-        'form': form,
-        'plans': plan_instances,
-        'semester': semester_instances, 
+        'form': form, 
     })
 
 def reqs_list_view(request):

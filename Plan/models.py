@@ -28,32 +28,15 @@ class Advisor(User):
 class Admin(User):
     pass
 
-class Course(models.Model):
-    name = models.CharField(max_length=255)
-    code = models.CharField(max_length=20)
-    credits = models.IntegerField(default=3)
-
-SEMESTER_CHOICES = [
-    ('1', 'Freshman Fall'),
-    ('2', 'Freshman Spring'),
-    ('3', 'Sophomore Fall'),
-    ('4', 'Sophomore Spring'),
-    ('5', 'Junior Fall'),
-    ('6', 'Junior Spring'),
-    ('7', 'Senior Fall'),
-    ('8', 'Senior Spring'),
-]
-
-class Semester(models.Model):
-    semester_num = models.CharField(max_length=2, choices=SEMESTER_CHOICES, default="1")
-    courses = models.ManyToManyField(Course)
-
 class Plan(models.Model):
-    user = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='plans')
-    plan_number = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(3)])
-    semesters = models.ManyToManyField(Semester)
-
-    class Meta:
-        unique_together = ('user', 'plan_number')
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, default=None, null=True)
+    s1 = models.JSONField(blank=True, null=True)
+    s2 = models.JSONField(blank=True, null=True)
+    s3 = models.JSONField(blank=True, null=True)
+    s4 = models.JSONField(blank=True, null=True)
+    s5 = models.JSONField(blank=True, null=True)
+    s6 = models.JSONField(blank=True, null=True)
+    s7 = models.JSONField(blank=True, null=True)
+    s8 = models.JSONField(blank=True, null=True)
 
 
