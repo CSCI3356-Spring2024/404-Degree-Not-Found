@@ -15,6 +15,12 @@ body {
     font-size: 14px;
 }
 
+.course {
+    border-bottom: 1px solid #acabab; /* Adjust the color and thickness as needed */
+    padding-bottom: 20px; /* Add some padding between each course */
+    margin-bottom: 20px; /* Add some margin between each course */
+}
+
 /* Increase the font size of the text inside the input field */
 input[type="text"] {
     font-size: 25px; /* Adjust the font size as desired */
