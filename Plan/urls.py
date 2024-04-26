@@ -17,9 +17,9 @@ urlpatterns = [
     path('signup/', views.signup_view, name='signup'),
     path('landing/', views.landing_view, name='landing'),
     path('profile/', views.profile_view, name='profile'),
-    path('futureplan/<int:plan_number>/', views.future_plan_view, name='futureplan'),
+    path('futureplan/<int:plan_id>/<int:plan_num>', views.future_plan_view, name='futureplan'),
     path("logout", views.logout_view),
     path("courses/<str:course_code>/", views.courseview, name = 'course_detail'),
-    path('courselist/', views.course_list_view, name='course_list'),
+    path('courselist/<int:plan_id>/<int:plan_num>', views.course_list_view, name='course_list'),
     path('reqs_list/', views.reqs_list_view, name='reqs_list'),
 ]

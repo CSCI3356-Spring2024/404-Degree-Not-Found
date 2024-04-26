@@ -30,7 +30,7 @@
         <div class="right-side">
             <div class="button-container">
                 {% for plan in plans %}
-                <a href="{% url 'Plan:futureplan' plan.id %}" class="button">Plan {{ forloop.counter }}</a>
+                <a href="{% url 'Plan:futureplan' plan.id forloop.counter %}" class="button">Plan {{ forloop.counter }}</a>
                 {% endfor %}
             </div>
         </div>

@@ -10,7 +10,7 @@
     <title>Profile</title>
 </head>
 <body>
-    <h1>Future 4-year plan</h1>
+    <h1>4-year Plan - Plan {{plan_num}} </h1>
     <div class="container">
         {% for semester_num, courses in courses_by_semester %}
             <div class="box">
@@ -43,7 +43,7 @@
             </div>
         {% endfor %}
     </div>
-    <a href="{% url 'Plan:course_list' %}" class="courses-button" style="padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px; display: inline-block; margin: 5px;">Add/Edit Courses</a>
+    <a href="{% url 'Plan:course_list' plan_id=plan_id plan_num=plan_num %}" class="courses-button" style="padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px; display: inline-block; margin: 5px;">Add/Edit Courses</a>
     <a href="{% url 'Plan:reqs_list' %}" class="requirements-button" style="padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px; display: inline-block; margin: 5px;">View Requirements</a>
 </body>
 </html>

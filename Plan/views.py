@@ -91,10 +91,10 @@ def courseview(request, course_code):
     course_details = fetch_course_data(course_code)
     return render(request, 'course_detail.html', {'course': course_details})
 
-def future_plan_view(request, plan_number):
+def future_plan_view(request, plan_id, plan_num):
     user = request.user
     student = Student.objects.get(email=user.email)
-    plan = get_object_or_404(Plan, student=student, id=plan_number)
+    plan = get_object_or_404(Plan, student=student, id=plan_id)
 
     semester_names = {
         's1': 'Freshman Fall',
@@ -111,10 +111,10 @@ def future_plan_view(request, plan_number):
 
     courses_by_semester = [(semester_num, getattr(plan, semester_num, [])) for semester_num in semester_nums]
 
-    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester': courses_by_semester, 'semester_names': semester_names})
+    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester': courses_by_semester, 'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num})
 
 
-def course_list_view(request):
+def course_list_view(request, plan_id, plan_num):
     user = request.user
     student = Student.objects.get(email=user.email)
     course_code = request.GET.get('course_code', '')
@@ -148,6 +148,8 @@ def course_list_view(request):
         print("Request method is not POST")
 
     return render(request, 'course_list.html', {
+        'plan_id': plan_id,
+        'plan_num': plan_num,
         'courses': courses,
         'course_code': course_code,
         'student': student,

@@ -8,3 +8,19 @@ body {
     margin-right: 10px;
     margin-bottom: 10px;
 }
+
+.search-container {
+    width: 90%; /* Set the width to 80% of the parent container */
+    margin-bottom: 20px; /* Add some margin at the bottom */
+    font-size: 14px;
+}
+
+/* Increase the font size of the text inside the input field */
+input[type="text"] {
+    font-size: 25px; /* Adjust the font size as desired */
+}
+
+/* Increase the font size of the text inside the button */
+button[type="submit"] {
+    font-size: 25px; /* Adjust the font size as desired */
+}

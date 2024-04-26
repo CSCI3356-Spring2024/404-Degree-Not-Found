@@ -8,11 +8,13 @@
 <body>
     <div class="body_container">
         <div class="search-container">
-            <form method="get" action="{% url 'Plan:course_list' %}">
+            <form method="get" action="{% url 'Plan:course_list' plan_id=plan_id plan_num=plan_num %}">
                 <input type="text" name="course_code" placeholder="Enter course code, e.g., CSCI">
                 <button type="submit">Search</button>
+                <a href="{% url 'Plan:futureplan' plan_id=plan_id plan_num=plan_num %}" class="courses-button" style="padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px; display: inline-block; margin: 5px;">Return to Plan {{ plan_num }}</a>
             </form>
         </div>
+    
 
         <div class="course-list">
             {% for course in courses %}
@@ -22,12 +24,12 @@
                     <p><strong>Credits:</strong> {{ course.credits }}</p>
                     <p>{{ course.description }}</p>
                 
-                    <form method="post" action="{% url 'Plan:course_list' %}">
+                    <form method="post" action="{% url 'Plan:course_list' plan_id=plan_id plan_num=plan_num %}">
                         {% csrf_token %}
                         <input type="hidden" name="code" value="{{ course.course_code }}">
                         {{ form.selected_plan }}
                         {{ form.selected_semester }}
-                        <button type="submit" class="add_button">Add to Plan</button>
+                        <button type="add" class="add_button">Add to Plan</button>
                     </form>
                 </div>
                 
