@@ -30,3 +30,18 @@ input[type="text"] {
 button[type="submit"] {
     font-size: 25px; /* Adjust the font size as desired */
 }
+
+.courses-button {
+    padding: 10px 20px;
+    background-color: #286897; /* Blue background */
+    color: #E1F2FF;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 5px; 
+    transition: background-color 0.3s ease; 
+}
+.courses-button:hover {
+    background-color: #E1F2FF;
+    color: #286897;
+}
