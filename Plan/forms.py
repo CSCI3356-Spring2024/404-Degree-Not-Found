@@ -29,6 +29,7 @@ class AddCourseToPlan(forms.Form):
         code = self.cleaned_data['code']
         semester_num = self.cleaned_data['selected_semester']
         selected_plan_id = self.cleaned_data['selected_plan']
+        print(selected_plan_id)
         
         try:
             selected_plan = Plan.objects.get(id=selected_plan_id, student=student)
