@@ -4,7 +4,7 @@ from django.views import generic
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib.auth import login, logout
-from .forms import EditStudentInfo, AddCourseToPlan
+from .forms import EditStudentInfo, AddCourseToPlan, RemoveCourseFromPlan
 from .models import Student, Admin, Plan
 from .api import fetch_course_data, fetch_courses
 from django.core.paginator import Paginator
@@ -128,13 +128,25 @@ def future_plan_view(request, plan_id, plan_num):
     semester_nums = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8']
 
 
-    courses_by_semester = [(semester_num, getattr(plan, semester_num, [])) for semester_num in semester_nums]
+    # courses_by_semester = [(semester_num, getattr(plan, semester_num, [])) for semester_num in semester_nums]
+    courses_by_semester = []
+    for semester_num in semester_nums:
+        course_codes = getattr(plan, semester_num, [])
+        course_tuple_list = []
+        for coursecode in course_codes:
+            data = fetch_course_data(coursecode)
+            course_title = data["title"]
+            course_tuple = (coursecode, course_title)
+            course_tuple_list.append(course_tuple)
+        courses_by_semester.append((semester_num, course_tuple_list))
+    
+    print(courses_by_semester)
 
     print(student.major)
 
     is_valid = validate_major_requirements(plan, student_major)
 
-    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester': courses_by_semester, 'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits, 'is_valid': is_valid})
+    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester':courses_by_semester,'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits, 'is_valid': is_valid})
 
 
 def course_list_view(request, plan_id, plan_num):
@@ -237,6 +249,33 @@ def set_primary_plan(request):
         
         return redirect('Plan:landing')  # Redirect to a relevant URL after processing
 
+from django.urls import reverse
 
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+
+def remove_course(request):
+    if request.method == 'POST':
+        form = RemoveCourseFromPlan(request.POST)
+        if form.is_valid():
+            plan_id = form.cleaned_data['plan_id']  # Assuming you have plan_id in your form
+            plan_num = form.cleaned_data['plan_num']
+            semester_num = form.cleaned_data['semester_num']  # Assuming you have plan_num in your form
+            if form.remove_course():
+                print('Course removed successfully.')
+                # Assuming you have access to plan_id and plan_num in your view
+                return HttpResponseRedirect(reverse('Plan:futureplan', kwargs={'plan_id': plan_id, 'plan_num': plan_num}))
+            else:
+                print('Failed to remove course. Course or plan not found.')
+        else:
+            print('Form is not valid. Errors:', form.errors)
+            print(form)
+    else:
+        print('Request method is not POST.')
+
+    # If the form submission fails or the request method is not POST, redirect to some page
+    return HttpResponseRedirect(reverse('Plan:landing'))  # Redirect to landing page
 
     
+
+

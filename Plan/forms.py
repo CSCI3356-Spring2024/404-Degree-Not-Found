@@ -56,6 +56,35 @@ class AddCourseToPlan(forms.Form):
         else:
             raise forms.ValidationError("Invalid semester selected.")
 
+# 
+class RemoveCourseFromPlan(forms.Form):
+    plan_id = forms.IntegerField(widget=forms.HiddenInput())
+    plan_num = forms.CharField(widget=forms.HiddenInput())
+    semester_num = forms.CharField(max_length=2, widget=forms.HiddenInput())
+    course_id = forms.CharField(widget=forms.HiddenInput())
+
+    def remove_course(self):
+        plan_id = self.cleaned_data['plan_id']
+        semester_num = self.cleaned_data['semester_num']
+        course_id = self.cleaned_data['course_id']
+
+        try:
+            plan = Plan.objects.get(id=plan_id)
+            courses_semester = getattr(plan, semester_num)
+            if course_id in courses_semester:
+                courses_semester.remove(course_id)
+
+                # Update total credits based on the course credits
+                data = fetch_course_data(course_id)
+                course_credits = data['credits']  # You need to implement this function
+                plan.total_credits -= course_credits
+                plan.save()
+                return True
+            else:
+                return False  # Course not found in the semester
+        except Plan.DoesNotExist:
+            return False  # Plan not found
+        
 class EditStudentInfo(forms.ModelForm):
     SCHOOL_CHOICES = [
         ('MCAS', 'MCAS'),
