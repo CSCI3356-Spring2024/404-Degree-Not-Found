@@ -44,6 +44,11 @@
             </div>
         {% endfor %}
     </div>
+    {% if is_valid %}
+    <p>Your plan meets the major requirements.</p>
+    {% else %}
+        <p>Your plan does not meet the major requirements. Please review and make necessary adjustments.</p>
+    {% endif %}
     <a href="{% url 'Plan:course_list' plan_id=plan_id plan_num=plan_num %}" class="courses-button" >Add/Edit Courses</a>
     <a href="{% url 'Plan:reqs_list' %}" class="requirements-button">View Requirements</a>
 

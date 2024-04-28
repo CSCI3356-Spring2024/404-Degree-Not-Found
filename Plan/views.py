@@ -13,6 +13,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from .data import MAJOR_COURSE_MAP
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
+from .major_requirements import validate_major_requirements
 
 
 def signup_view(request):
@@ -111,6 +112,8 @@ def future_plan_view(request, plan_id, plan_num):
     plan = get_object_or_404(Plan, student=student, id=plan_id)
     total_credits = plan.total_credits
 
+    student_major = student.major
+
     semester_names = {
         's1': 'Freshman Fall',
         's2': 'Freshman Spring',
@@ -127,7 +130,11 @@ def future_plan_view(request, plan_id, plan_num):
 
     courses_by_semester = [(semester_num, getattr(plan, semester_num, [])) for semester_num in semester_nums]
 
-    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester': courses_by_semester, 'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits})
+    print(student.major)
+
+    is_valid = validate_major_requirements(plan, student_major)
+
+    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester': courses_by_semester, 'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits, 'is_valid': is_valid})
 
 
 def course_list_view(request, plan_id, plan_num):
