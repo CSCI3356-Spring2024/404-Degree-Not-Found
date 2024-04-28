@@ -47,8 +47,22 @@
 </body>
 <script>
 function submitForm(checkbox) {
-    // Uncheck all checkboxes except the one that was just checked
+    // Check if any checkbox is currently checked as primary
+    var anyPrimaryChecked = false;
     var checkboxes = document.getElementsByName("checkbox");
+    checkboxes.forEach(function(cb) {
+        if (cb.checked && cb !== checkbox) {
+            anyPrimaryChecked = true;
+        }
+    });
+
+    // If no primary plan is currently checked, prevent deselection of the currently checked checkbox
+    if (!anyPrimaryChecked && !checkbox.checked) {
+        checkbox.checked = true;
+        return;
+    }
+
+    // Uncheck all checkboxes except the one that was just checked
     checkboxes.forEach(function(cb) {
         if (cb !== checkbox) {
             cb.checked = false;
@@ -58,6 +72,7 @@ function submitForm(checkbox) {
     // Submit the form
     document.getElementById("primary-plan-form").submit();
 }
+
 
 
 </script>
