@@ -54,5 +54,25 @@ a {
 
 .button-container {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-around;
 }
+
+#primary-plan-form {
+    display: flex;
+    flex-wrap: wrap;
+}
+#primary-plan-form a {
+    margin-right: 10px;
+}
+
+.checkbox-label input[type="checkbox"],
+.checkbox-label label {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.checkbox-label label span {
+    font-size: smaller;
+}
+

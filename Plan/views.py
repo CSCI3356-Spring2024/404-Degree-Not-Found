@@ -12,6 +12,7 @@ from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from .data import MAJOR_COURSE_MAP
 from django.core.exceptions import ValidationError
+from django.http import JsonResponse
 
 
 def signup_view(request):
@@ -186,5 +187,22 @@ def reqs_list_view(request):
         'page_obj': page_obj, 
         'MAJOR_COURSE_MAP': MAJOR_COURSE_MAP
     })
+
+def set_primary_plan(request):
+    if request.method == 'POST':
+        plan_id = request.POST.get('plan_id')
+        try:
+            plan = Plan.objects.get(id=plan_id)
+            # If another plan is already selected as primary, change it to False
+            Plan.objects.filter(student=plan.student, is_primary=True).update(is_primary=False)
+            # Set the selected plan as primary
+            plan.is_primary = True
+            plan.save()
+            print("success")
+            return JsonResponse({'success': True})
+        except Plan.DoesNotExist:
+            print("failed")
+            return JsonResponse({'success': False, 'error': 'Plan not found'})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 
