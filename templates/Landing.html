@@ -25,15 +25,58 @@
             <h3>University Core</h3>
             <div class="rectangle">0%</div>
             <h3>Total Credits</h3>
-            <div class="rectangle">0%</div>
+            <div class="rectangle" style="position: relative;">
+                <div class="progress" style="position: absolute; top: 0; left: 0; width: {{ completion_percentage }}%; height: 100%; background-color: gold;"></div>
+                <div class="progress-bar" style="width: {{ credits_percentage }}%; height: 100%; background-color: #B29D6C;">{{ credits_percentage }}%</div>
+            </div>
         </div>
         <div class="right-side">
             <div class="button-container">
-                {% for plan in plans %}
-                <a href="{% url 'Plan:futureplan' plan.id %}" class="button">Plan {{ forloop.counter }}</a>
-                {% endfor %}
+                <form method="post" id="primary-plan-form" action="{% url 'Plan:set_primary_plan' %}">
+                    {% csrf_token %}
+                    {% for plan in plans %}
+                    <a href="{% url 'Plan:futureplan' plan.id forloop.counter %}" class="button">
+                        <div class="checkbox-label">
+                            <label for="plan_{{ plan.id }}">Plan {{ forloop.counter }}</label><br>
+                            <input type="checkbox" id="plan_{{ plan.id }}" name="checkbox" value="{{ plan.id }}" {% if plan.is_primary %}checked{% endif %} onchange="submitForm(this)">
+                            <span style="font-size: 15;">Primary Plan</span>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </form>
             </div>
         </div>
     </div>
 </body>
+<script>
+function submitForm(checkbox) {
+    // Check if any checkbox is currently checked as primary
+    var anyPrimaryChecked = false;
+    var checkboxes = document.getElementsByName("checkbox");
+    checkboxes.forEach(function(cb) {
+        if (cb.checked && cb !== checkbox) {
+            anyPrimaryChecked = true;
+        }
+    });
+
+    // If no primary plan is currently checked, prevent deselection of the currently checked checkbox
+    if (!anyPrimaryChecked && !checkbox.checked) {
+        checkbox.checked = true;
+        return;
+    }
+
+    // Uncheck all checkboxes except the one that was just checked
+    checkboxes.forEach(function(cb) {
+        if (cb !== checkbox) {
+            cb.checked = false;
+        }
+    });
+
+    // Submit the form
+    document.getElementById("primary-plan-form").submit();
+}
+
+
+
+</script>
 

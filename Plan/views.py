@@ -12,6 +12,7 @@ from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from .data import MAJOR_COURSE_MAP
 from django.core.exceptions import ValidationError
+from django.http import JsonResponse
 
 
 def signup_view(request):
@@ -65,7 +66,20 @@ def landing_view(request):
 
     plans = Plan.objects.filter(student=student)
 
-    return render(request, 'Landing.html', {'student': student, 'plans': plans}) 
+    # Retrieve the primary plan for the student
+    primary_plan = Plan.objects.filter(student=student, is_primary=True).first()
+
+    credits_required = 120
+    if primary_plan is not None:
+        current_credits = primary_plan.total_credits
+        credits_percentage = round((current_credits / credits_required) * 100,1)
+    else:
+        current_credits = 0
+        credits_percentage = 0
+
+
+    return render(request, 'Landing.html', {'student': student, 'plans': plans, 'credits_percentage':credits_percentage}) 
+
 
 def profile_view(request):
     user = request.user
@@ -91,10 +105,11 @@ def courseview(request, course_code):
     course_details = fetch_course_data(course_code)
     return render(request, 'course_detail.html', {'course': course_details})
 
-def future_plan_view(request, plan_number):
+def future_plan_view(request, plan_id, plan_num):
     user = request.user
     student = Student.objects.get(email=user.email)
-    plan = get_object_or_404(Plan, student=student, id=plan_number)
+    plan = get_object_or_404(Plan, student=student, id=plan_id)
+    total_credits = plan.total_credits
 
     semester_names = {
         's1': 'Freshman Fall',
@@ -109,12 +124,13 @@ def future_plan_view(request, plan_number):
 
     semester_nums = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8']
 
+
     courses_by_semester = [(semester_num, getattr(plan, semester_num, [])) for semester_num in semester_nums]
 
-    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester': courses_by_semester, 'semester_names': semester_names})
+    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester': courses_by_semester, 'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits})
 
 
-def course_list_view(request):
+def course_list_view(request, plan_id, plan_num):
     user = request.user
     student = Student.objects.get(email=user.email)
     course_code = request.GET.get('course_code', '')
@@ -131,13 +147,22 @@ def course_list_view(request):
                 form.save(student)
                 print("Form data:", form.cleaned_data)
                 print("Course added to the plan successfully.")
+                message = "Course added successfully"
+                color = "green"
             except ValidationError as e:
+                print("Course failed to add")
+                message = e.message
+                color = "red"
+            finally:
                 return render(request, 'course_list.html', {
+                    'plan_id': plan_id,
+                    'plan_num': plan_num,
                     'courses': courses,
                     'course_code': course_code,
                     'student': student,
                     'form': form,
-                    'error_message': e.message,
+                    'message': message,
+                    'color': color
                 })
         else:
             form = AddCourseToPlan(student=student)
@@ -148,6 +173,8 @@ def course_list_view(request):
         print("Request method is not POST")
 
     return render(request, 'course_list.html', {
+        'plan_id': plan_id,
+        'plan_num': plan_num,
         'courses': courses,
         'course_code': course_code,
         'student': student,
@@ -174,4 +201,35 @@ def reqs_list_view(request):
         'MAJOR_COURSE_MAP': MAJOR_COURSE_MAP
     })
 
+def set_primary_plan(request):
+    if request.method == 'POST':
+        # Retrieve the selected plans and their associated plan IDs
+        selected_plans = request.POST.getlist('checkbox')
 
+        # Get all Plan IDs
+        all_plan_ids = [plan.id for plan in Plan.objects.all()]
+
+        # Process each plan
+        for plan_id in all_plan_ids:
+            # If the plan_id is in the selected plans list and the corresponding checkbox is checked
+            if str(plan_id) in selected_plans:
+                # Retrieve the Plan object using the plan_id
+                plan = Plan.objects.get(id=plan_id)
+                # Set the plan as primary
+                plan.is_primary = True
+                plan.save()
+                print(f"Selected primary plan successfully: Plan ID {plan_id}")
+            else:
+                # If the plan_id is not in the selected plans list or the corresponding checkbox is not checked
+                # Retrieve the Plan object using the plan_id
+                plan = Plan.objects.get(id=plan_id)
+                # Set the plan as non-primary
+                plan.is_primary = False
+                plan.save()
+                print(f"Deselected primary plan successfully: Plan ID {plan_id}")
+        
+        return redirect('Plan:landing')  # Redirect to a relevant URL after processing
+
+
+
+    

@@ -8,3 +8,40 @@ body {
     margin-right: 10px;
     margin-bottom: 10px;
 }
+
+.search-container {
+    width: 90%; /* Set the width to 80% of the parent container */
+    margin-bottom: 20px; /* Add some margin at the bottom */
+    font-size: 14px;
+}
+
+.course {
+    border-bottom: 1px solid #acabab; /* Adjust the color and thickness as needed */
+    padding-bottom: 20px; /* Add some padding between each course */
+    margin-bottom: 20px; /* Add some margin between each course */
+}
+
+/* Increase the font size of the text inside the input field */
+input[type="text"] {
+    font-size: 25px; /* Adjust the font size as desired */
+}
+
+/* Increase the font size of the text inside the button */
+button[type="submit"] {
+    font-size: 25px; /* Adjust the font size as desired */
+}
+
+.courses-button {
+    padding: 10px 20px;
+    background-color: #286897; /* Blue background */
+    color: #E1F2FF;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 5px; 
+    transition: background-color 0.3s ease; 
+}
+.courses-button:hover {
+    background-color: #E1F2FF;
+    color: #286897;
+}
