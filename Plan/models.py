@@ -38,5 +38,6 @@ class Plan(models.Model):
     s6 = models.JSONField(blank=True, default=[])
     s7 = models.JSONField(blank=True, default=[])
     s8 = models.JSONField(blank=True, default=[])
+    total_credits = models.IntegerField(default=0)
 
 

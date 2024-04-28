@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from .models import Student, Plan
+from .api import fetch_course_data, fetch_courses
 
 from .models import Plan
 
@@ -44,6 +45,12 @@ class AddCourseToPlan(forms.Form):
                 semester_field.append(code)
             else:
                 raise forms.ValidationError("Selected semester is already full.")
+            
+            # Update total credits based on the course credits
+            data = fetch_course_data(code)
+            course_credits = data['credits']  # You need to implement this function
+            selected_plan.total_credits += course_credits
+
             selected_plan.save()
         else:
             raise forms.ValidationError("Invalid semester selected.")
