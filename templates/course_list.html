@@ -12,6 +12,9 @@
                 <input type="text" name="course_code" placeholder="Enter course code, e.g., CSCI">
                 <button type="submit">Search</button>
                 <a href="{% url 'Plan:futureplan' plan_id=plan_id plan_num=plan_num %}" class="courses-button">Return to Plan {{ plan_num }}</a>
+                {% if message %}
+                <p style="color: {{ color }};">{{ message }}</p>
+                {% endif %}
             </form>
         </div>
     
@@ -32,10 +35,12 @@
                         <button type="add" class="add_button">Add to Plan</button>
                     </form>
                 </div>
-                
             {% empty %}
+                {% if not message %}
                 <p>No courses found for '{{ course_code }}'.</p>
+                {% endif %}
             {% endfor %}
+            
         </div>
 
         <!-- links to move between pages-->

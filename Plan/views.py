@@ -131,13 +131,22 @@ def course_list_view(request, plan_id, plan_num):
                 form.save(student)
                 print("Form data:", form.cleaned_data)
                 print("Course added to the plan successfully.")
+                message = "Course added successfully"
+                color = "green"
             except ValidationError as e:
+                print("Course failed to add")
+                message = e.message
+                color = "red"
+            finally:
                 return render(request, 'course_list.html', {
+                    'plan_id': plan_id,
+                    'plan_num': plan_num,
                     'courses': courses,
                     'course_code': course_code,
                     'student': student,
                     'form': form,
-                    'error_message': e.message,
+                    'message': message,
+                    'color': color
                 })
         else:
             form = AddCourseToPlan(student=student)
