@@ -70,8 +70,12 @@ def landing_view(request):
     primary_plan = Plan.objects.filter(student=student, is_primary=True).first()
 
     credits_required = 120
-    current_credits = primary_plan.total_credits
-    credits_percentage = round((current_credits / credits_required) * 100,1)
+    if primary_plan is not None:
+        current_credits = primary_plan.total_credits
+        credits_percentage = round((current_credits / credits_required) * 100,1)
+    else:
+        current_credits = 0
+        credits_percentage = 0
 
 
     return render(request, 'Landing.html', {'student': student, 'plans': plans, 'credits_percentage':credits_percentage}) 
