@@ -13,35 +13,45 @@
     <h1>4-year Plan - Plan {{plan_num}} </h1>
     <h2> Total Credits: {{total_credits}} / 120 </h2>
     <div class="container">
-        {% for semester_num, courses in courses_by_semester %}
-            <div class="box">
-                <div class="semester-name"><b><div class="semester-name"><b>
-                {% if semester_num == 's1' %}
-                    Freshman Fall
-                {% elif semester_num == 's2' %}
-                    Freshman Spring
-                {% elif semester_num == 's3' %}
-                    Sophomore Fall
-                {% elif semester_num == 's4' %}
-                    Sophomore Spring
-                {% elif semester_num == 's5' %}
-                    Junior Fall
-                {% elif semester_num == 's6' %}
-                    Junior Spring
-                {% elif semester_num == 's7' %}
-                    Senior Fall
-                {% elif semester_num == 's8' %}
-                    Senior Spring
-                {% endif %}
-            </b></div></b></div>
-                {% if courses %}
-                    {% for course in courses %}
-                        <div class="course-rectangle">{{ course }}</div>
-                    {% endfor %}
-                {% else %}
-                    <p>No courses planned for this semester</p>
-                {% endif %}
-            </div>
+        {% for semester_num, course_list in courses_by_semester %}
+                <div class="box">
+                    <div class="semester-name"><b><div class="semester-name"><b>
+                    {% if semester_num == 's1' %}
+                        Freshman Fall
+                    {% elif semester_num == 's2' %}
+                        Freshman Spring
+                    {% elif semester_num == 's3' %}
+                        Sophomore Fall
+                    {% elif semester_num == 's4' %}
+                        Sophomore Spring
+                    {% elif semester_num == 's5' %}
+                        Junior Fall
+                    {% elif semester_num == 's6' %}
+                        Junior Spring
+                    {% elif semester_num == 's7' %}
+                        Senior Fall
+                    {% elif semester_num == 's8' %}
+                        Senior Spring
+                    {% endif %}
+                </b></div></b></div>
+                    {% if course_list %}
+                        {% for course_tuple in course_list %}
+                            <div class="course-rectangle">
+                                <span class="course-number">{{ course_tuple.1 }}</span>
+                                <form class="remove-form" method="post" action="{% url 'Plan:remove_course' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="plan_id" value="{{ plan_id }}">
+                                    <input type="hidden" name="plan_num" value="{{ plan_num }}">
+                                    <input type="hidden" name="semester_num" value="{{ semester_num }}">
+                                    <input type="hidden" name="course_id" value="{{ course_tuple.0 }}">
+                                    <input type="submit" value="Remove">
+                                </form>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No courses planned for this semester</p>
+                    {% endif %}
+                </div>
         {% endfor %}
     </div>
     <a href="{% url 'Plan:course_list' plan_id=plan_id plan_num=plan_num %}" class="courses-button" >Add/Edit Courses</a>

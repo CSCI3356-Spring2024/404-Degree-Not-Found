@@ -48,6 +48,10 @@ body {
     border: 1px solid #999;
 }
 
+.course-rectangle form {
+    margin-left: auto; /* Push the form to the right */
+}
+
 .semester-name {
     flex: 1;
     width: 100%;
