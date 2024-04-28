@@ -66,7 +66,16 @@ def landing_view(request):
 
     plans = Plan.objects.filter(student=student)
 
-    return render(request, 'Landing.html', {'student': student, 'plans': plans}) 
+    # Retrieve the primary plan for the student
+    primary_plan = Plan.objects.filter(student=student, is_primary=True).first()
+
+    credits_required = 120
+    current_credits = primary_plan.total_credits
+    credits_percentage = round((current_credits / credits_required) * 100,1)
+
+
+    return render(request, 'Landing.html', {'student': student, 'plans': plans, 'credits_percentage':credits_percentage}) 
+
 
 def profile_view(request):
     user = request.user

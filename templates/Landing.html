@@ -25,7 +25,10 @@
             <h3>University Core</h3>
             <div class="rectangle">0%</div>
             <h3>Total Credits</h3>
-            <div class="rectangle">0%</div>
+            <div class="rectangle" style="position: relative;">
+                <div class="progress" style="position: absolute; top: 0; left: 0; width: {{ completion_percentage }}%; height: 100%; background-color: gold;"></div>
+                <div class="progress-bar" style="width: {{ credits_percentage }}%; height: 100%; background-color: #B29D6C;">{{ credits_percentage }}%</div>
+            </div>
         </div>
         <div class="right-side">
             <div class="button-container">

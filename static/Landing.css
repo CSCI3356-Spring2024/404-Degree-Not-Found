@@ -22,14 +22,14 @@ a {
     width: 50%;
 }
 
-.rectangle {
+/* .rectangle {
     border: 1px solid black;
     width: 300px;
-    height: 20px;
+    height: 30px;
     margin: 10px 0;
     padding: 10px;
     text-align: left;
-}
+} */
 
 .button {
     text-decoration: none;
@@ -75,4 +75,25 @@ a {
 .checkbox-label label span {
     font-size: smaller;
 }
+
+.rectangle {
+    position: relative;
+    width: 500px; /* Adjust width as needed */
+    height: 30px; /* Adjust height as needed */
+    border: 1px solid black; /* Add border style */
+    margin: 10px 0; /* Adjust margin as needed */
+    padding: 0; /* Remove padding */
+    box-sizing: border-box; /* Include border in the height and width */
+    background-color: E1F2FF;
+}
+
+.progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #B29D6C; /* Color of the progress bar */
+}
+
+
+
 
