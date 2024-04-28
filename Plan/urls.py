@@ -8,6 +8,7 @@ from Plan.views import signup_view
 from django.contrib.auth import views as auth_views
 from Plan import views
 from . import views
+from .views import set_primary_plan
 
 app_name = "Plan"
 urlpatterns = [
@@ -22,4 +23,5 @@ urlpatterns = [
     path("courses/<str:course_code>/", views.courseview, name = 'course_detail'),
     path('courselist/<int:plan_id>/<int:plan_num>', views.course_list_view, name='course_list'),
     path('reqs_list/', views.reqs_list_view, name='reqs_list'),
+    path('set_primary_plan/', set_primary_plan, name='set_primary_plan'),
 ]

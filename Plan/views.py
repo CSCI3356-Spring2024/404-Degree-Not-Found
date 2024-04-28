@@ -190,19 +190,33 @@ def reqs_list_view(request):
 
 def set_primary_plan(request):
     if request.method == 'POST':
-        plan_id = request.POST.get('plan_id')
-        try:
-            plan = Plan.objects.get(id=plan_id)
-            # If another plan is already selected as primary, change it to False
-            Plan.objects.filter(student=plan.student, is_primary=True).update(is_primary=False)
-            # Set the selected plan as primary
-            plan.is_primary = True
-            plan.save()
-            print("success")
-            return JsonResponse({'success': True})
-        except Plan.DoesNotExist:
-            print("failed")
-            return JsonResponse({'success': False, 'error': 'Plan not found'})
-    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+        # Retrieve the selected plans and their associated plan IDs
+        selected_plans = request.POST.getlist('checkbox')
+
+        # Get all Plan IDs
+        all_plan_ids = [plan.id for plan in Plan.objects.all()]
+
+        # Process each plan
+        for plan_id in all_plan_ids:
+            # If the plan_id is in the selected plans list and the corresponding checkbox is checked
+            if str(plan_id) in selected_plans:
+                # Retrieve the Plan object using the plan_id
+                plan = Plan.objects.get(id=plan_id)
+                # Set the plan as primary
+                plan.is_primary = True
+                plan.save()
+                print(f"Selected primary plan successfully: Plan ID {plan_id}")
+            else:
+                # If the plan_id is not in the selected plans list or the corresponding checkbox is not checked
+                # Retrieve the Plan object using the plan_id
+                plan = Plan.objects.get(id=plan_id)
+                # Set the plan as non-primary
+                plan.is_primary = False
+                plan.save()
+                print(f"Deselected primary plan successfully: Plan ID {plan_id}")
+        
+        return redirect('Plan:landing')  # Redirect to a relevant URL after processing
 
 
+
+    
