@@ -95,6 +95,7 @@ def future_plan_view(request, plan_id, plan_num):
     user = request.user
     student = Student.objects.get(email=user.email)
     plan = get_object_or_404(Plan, student=student, id=plan_id)
+    total_credits = plan.total_credits
 
     semester_names = {
         's1': 'Freshman Fall',
@@ -109,9 +110,10 @@ def future_plan_view(request, plan_id, plan_num):
 
     semester_nums = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8']
 
+
     courses_by_semester = [(semester_num, getattr(plan, semester_num, [])) for semester_num in semester_nums]
 
-    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester': courses_by_semester, 'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num})
+    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester': courses_by_semester, 'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits})
 
 
 def course_list_view(request, plan_id, plan_num):

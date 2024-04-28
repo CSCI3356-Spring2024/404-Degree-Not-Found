@@ -11,6 +11,7 @@
 </head>
 <body>
     <h1>4-year Plan - Plan {{plan_num}} </h1>
+    <h2> Total Credits: {{total_credits}} / 120 </h2>
     <div class="container">
         {% for semester_num, courses in courses_by_semester %}
             <div class="box">
@@ -45,7 +46,7 @@
     </div>
     <a href="{% url 'Plan:course_list' plan_id=plan_id plan_num=plan_num %}" class="courses-button" >Add/Edit Courses</a>
     <a href="{% url 'Plan:reqs_list' %}" class="requirements-button">View Requirements</a>
-    
+
 </body>
 </html>
 {% endblock %}
