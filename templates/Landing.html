@@ -35,7 +35,7 @@
                 <form method="post" id="primary-plan-form" action="{% url 'Plan:set_primary_plan' %}">
                     {% csrf_token %}
                     {% for plan in plans %}
-                    <a href="{% url 'Plan:futureplan' plan.id forloop.counter %}" class="button">
+                    <a href="{% url 'Plan:futureplan' plan.id forloop.counter%}" class="button">
                         <div class="checkbox-label">
                             <label for="plan_{{ plan.id }}">Plan {{ forloop.counter }}</label><br>
                             <input type="checkbox" id="plan_{{ plan.id }}" name="checkbox" value="{{ plan.id }}" {% if plan.is_primary %}checked{% endif %} onchange="submitForm(this)">
