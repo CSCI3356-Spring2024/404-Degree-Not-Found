@@ -13,6 +13,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from .data import MAJOR_COURSE_MAP
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
+from datetime import datetime
 from .major_requirements import validate_major_requirements
 
 
@@ -72,8 +73,8 @@ def landing_view(request):
 
     credits_required = 120
     if primary_plan is not None:
-        current_credits = primary_plan.total_credits
-        credits_percentage = round((current_credits / credits_required) * 100,1)
+        completed = credits_completed(primary_plan, int(student.entered))
+        credits_percentage = round((completed / credits_required) * 100,1)
     else:
         current_credits = 0
         credits_percentage = 0
@@ -106,12 +107,42 @@ def courseview(request, course_code):
     course_details = fetch_course_data(course_code)
     return render(request, 'course_detail.html', {'course': course_details})
 
+def is_date_passed(year, month, day):
+    current_date = datetime.now().date()
+    input_date = datetime(year, month, day).date()
+    return current_date > input_date
+
+def credits_completed(plan, entered_year):
+    completed_dates = [
+        (entered_year,8,26),
+        (entered_year+1,1,13),
+        (entered_year+1,8,26),
+        (entered_year+2,1,13),
+        (entered_year+2,8,26),
+        (entered_year+3,1,13),
+        (entered_year+3,8,26),
+        (entered_year+4,1,13)  
+    ]
+    plan_objects = [plan.s1, plan.s2,plan.s3,plan.s4,plan.s5,plan.s6,plan.s7,plan.s8]
+    completed_credits = 0
+    for semester, dates in zip(plan_objects, completed_dates):
+        if is_date_passed(dates[0],dates[1],dates[2]):
+            for coursecode in semester:
+                data = fetch_course_data(coursecode)
+                completed_credits += data["credits"]
+        else:
+            break
+    return completed_credits
+
 def future_plan_view(request, plan_id, plan_num):
+
     user = request.user
     student = Student.objects.get(email=user.email)
+    user_entered_year = int(student.entered)
     plan = get_object_or_404(Plan, student=student, id=plan_id)
     total_credits = plan.total_credits
 
+    completed_credits = credits_completed(plan, user_entered_year)
     student_major = student.major
 
     semester_names = {
@@ -140,13 +171,9 @@ def future_plan_view(request, plan_id, plan_num):
             course_tuple_list.append(course_tuple)
         courses_by_semester.append((semester_num, course_tuple_list))
     
-    print(courses_by_semester)
-
-    print(student.major)
-
     is_valid = validate_major_requirements(plan, student_major)
 
-    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester':courses_by_semester,'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits, 'is_valid': is_valid})
+    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester':courses_by_semester,'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits, 'completed_credits': completed_credits, "is_valid": is_valid})
 
 
 def course_list_view(request, plan_id, plan_num):
@@ -159,17 +186,15 @@ def course_list_view(request, plan_id, plan_num):
     page_number = request.GET.get('page')
     courses = paginator.get_page(page_number)
 
+    message, color = "", ""
     if request.method == 'POST':
         form = AddCourseToPlan(request.POST, student=student)
         if form.is_valid():
             try:
                 form.save(student)
-                print("Form data:", form.cleaned_data)
-                print("Course added to the plan successfully.")
                 message = "Course added successfully"
                 color = "green"
             except ValidationError as e:
-                print("Course failed to add")
                 message = e.message
                 color = "red"
             finally:
@@ -185,11 +210,8 @@ def course_list_view(request, plan_id, plan_num):
                 })
         else:
             form = AddCourseToPlan(student=student)
-            print("Form errors:", form.errors)
-            print("Course not added to plan")
     else:
         form = AddCourseToPlan(student=student) 
-        print("Request method is not POST")
 
     return render(request, 'course_list.html', {
         'plan_id': plan_id,
@@ -237,7 +259,6 @@ def set_primary_plan(request):
                 # Set the plan as primary
                 plan.is_primary = True
                 plan.save()
-                print(f"Selected primary plan successfully: Plan ID {plan_id}")
             else:
                 # If the plan_id is not in the selected plans list or the corresponding checkbox is not checked
                 # Retrieve the Plan object using the plan_id
@@ -245,7 +266,6 @@ def set_primary_plan(request):
                 # Set the plan as non-primary
                 plan.is_primary = False
                 plan.save()
-                print(f"Deselected primary plan successfully: Plan ID {plan_id}")
         
         return redirect('Plan:landing')  # Redirect to a relevant URL after processing
 
@@ -262,14 +282,12 @@ def remove_course(request):
             plan_num = form.cleaned_data['plan_num']
             semester_num = form.cleaned_data['semester_num']  # Assuming you have plan_num in your form
             if form.remove_course():
-                print('Course removed successfully.')
                 # Assuming you have access to plan_id and plan_num in your view
                 return HttpResponseRedirect(reverse('Plan:futureplan', kwargs={'plan_id': plan_id, 'plan_num': plan_num}))
             else:
                 print('Failed to remove course. Course or plan not found.')
         else:
             print('Form is not valid. Errors:', form.errors)
-            print(form)
     else:
         print('Request method is not POST.')
 

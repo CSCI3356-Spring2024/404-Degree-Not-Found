@@ -11,7 +11,8 @@
 </head>
 <body>
     <h1>4-year Plan - Plan {{plan_num}} </h1>
-    <h2> Total Credits: {{total_credits}} / 120 </h2>
+    <h3> Credits in Plan: {{total_credits}} / 120 </h3>
+    <h3> Completed Credits: {{completed_credits}} / 120 </h3>
     <div class="container">
         {% for semester_num, course_list in courses_by_semester %}
                 <div class="box">
