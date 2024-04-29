@@ -231,7 +231,10 @@ def credits_completed(plan, entered_year):
         if is_date_passed(dates[0],dates[1],dates[2]):
             for coursecode in semester:
                 data = fetch_course_data(coursecode)
-                completed_credits += data["credits"]
+                try:
+                    completed_credits += data["credits"]
+                except:
+                    pass
         else:
             break
     return completed_credits
