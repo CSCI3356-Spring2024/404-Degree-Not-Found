@@ -5,5 +5,27 @@
     <link rel="stylesheet" href="{% static 'admin_landing.css' %}">
 </head>
 <body>
-    <p>this is something</p>
+    <div class="container">
+        <h2>Admin Landing Page</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Semester</th>
+                    <th>Course Name</th>
+                    <th>Course Number</th>
+                    <th>Student Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in report_data %}
+                <tr>
+                    <td>{{ item.semester }}</td>
+                    <td>{{ item.course_name }}</td>
+                    <td>{{ item.course_number }}</td>
+                    <td>{{ item.student_count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>

@@ -10,7 +10,7 @@
             <h1>Progress Overview for {{student.first_name}} {{student.last_name}}</h1>
             <h2>Major</h2>
             <div class="rectangle">{{student.major}}</div>
-            {% if student.major2 != "None" %}
+            {% if student.major2 != "Undeclared" %}
             <div class="rectangle">{{student.major2}}</div>
             {% endif %}
             {% if student.minor != "None" or student.minor2 != "None"%}

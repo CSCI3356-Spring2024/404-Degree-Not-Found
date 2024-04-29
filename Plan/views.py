@@ -15,7 +15,7 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from datetime import datetime
 from .major_requirements import validate_major_requirements
-from datetime import datetime
+from .get_next_semester import get_current_semester, get_upcoming_semesters
 
 
 
@@ -60,7 +60,7 @@ def landing_view(request):
     #testing if user is an advisor or a student, redirects to
     try:
         advisor = Advisor.objects.get(email=request.user.email)
-        return redirect('admin_landing')
+        return redirect('Plan:admin_landing')
     except Advisor.DoesNotExist:
         pass
 
@@ -98,45 +98,89 @@ def admin_landing_view(request):
     except Advisor.DoesNotExist:
         return redirect('Plan:landing')
 
-    future_plans = Plan.objects.filter(s1__isnull=False)
-    
+    # Only fetch plans that are primary
+    primary_plans = Plan.objects.filter(s1__isnull=False, is_primary=True)
+
     # Initialize a dictionary to store the course data
     course_data = {}
-    
-    # Iterate over each plan and extract course information
-    for plan in future_plans:
+
+    # Iterate over each primary plan and extract course information
+    for plan in primary_plans:
+        # Get the entry year of the student
         entry_year = plan.student.entered
-        semesters = get_student_semesters(entry_year)
-        for semester_num in semesters:
+        # Get the list of semesters for the student based on their entry year
+        current_semester, _ = get_current_semester(entry_year)
+        semesters = get_upcoming_semesters(current_semester)
+        for semester_num, semester_name in semesters.items():
+            print(f"Processing Semester: {semester_name}")
             course_codes = plan.__dict__[semester_num]
             for course_code in course_codes:
                 # Extract the course code
                 if course_code:  # Ensure the course code is not None or empty
                     # Increment the count of students who added the course code to their plan
-                    if course_code in course_data:
-                        course_data[course_code] += 1
+                    if semester_name not in course_data:
+                        course_data[semester_name] = {}
+                    if course_code in course_data[semester_name]:
+                        course_data[semester_name][course_code] += 1
                     else:
-                        course_data[course_code] = 1
-    
+                        course_data[semester_name][course_code] = 1
+
     # Prepare the data for rendering in the template
     report_data = []
-    for course_key, student_count in course_data.items():
-        semester, course_name, course_number = course_key
-        report_data.append({
-            'semester': semester,
-            'course_name': course_name,
-            'course_number': course_number,
-            'student_count': student_count
-        })
+    for semester, course_counts in course_data.items():
+        for course_code, student_count in course_counts.items():
+            # Fetch course data from the API
+            course_info = fetch_course_data(course_code)
+            if course_info:
+                # Extract course name and number from course data
+                course_name = course_info.get('title', 'Unknown')
+                course_number = course_info.get('course_code', 'Unknown')
+                report_data.append({
+                    'semester': semester,
+                    'course_name': course_name,
+                    'course_number': course_number,
+                    'student_count': student_count
+                })
+            else:
+                # Handle case where course data could not be fetched
+                report_data.append({
+                    'semester': semester,
+                    'course_name': 'Unknown',
+                    'course_number': course_code,
+                    'student_count': student_count
+                })
 
     return render(request, 'admin_landing.html', {'report_data': report_data})
 
 def get_student_semesters(entry_year):
-    current_year = int(datetime.now().year)
-    years_since_entry = current_year - int(entry_year)
-    semesters = []
-    for i in range(1, min(9, years_since_entry * 2 + 1)):
-        semesters.append(f's{i}')
+    current_year = datetime.now().year
+    current_month = datetime.now().month
+    entry_year = int(entry_year)
+
+    # Determine the entry semester based on the current month
+    entry_semester = "Fall" if current_month >= 8 else "Spring"
+
+    # Calculate the number of years since entry
+    years_since_entry = current_year - entry_year
+
+    # Calculate the total number of semesters (max 8)
+    total_semesters = min(years_since_entry * 2, 8)
+
+    # Initialize a dictionary to store the semester codes and names
+    semesters = {}
+
+    # Generate semester codes and names based on the entry semester and total semesters
+    for i in range(1, total_semesters + 1):
+        if entry_semester == "Fall":
+            year = entry_year + (i - 1) // 2
+            semester_name = f"Fall {year}" if i % 2 == 1 else f"Spring {year + 1}"
+        else:
+            year = entry_year + (i - 1) // 2
+            semester_name = f"Spring {year}" if i % 2 == 1 else f"Fall {year}"
+
+        semester_code = f"s{i}"
+        semesters[semester_code] = semester_name
+
     return semesters
     
 

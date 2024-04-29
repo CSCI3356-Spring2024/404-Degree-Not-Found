@@ -111,7 +111,7 @@ class EditStudentInfo(forms.ModelForm):
     ]
 
     MAJOR_CHOICES = [
-        ('None', 'None'),
+        ('Undeclared', 'Undeclared'),
         ('Computer Science BA', 'Computer Science BA'),
         ('Computer Science BS', 'Computer Science BS'),
         ('Economics', 'Economics'),
