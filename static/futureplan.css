@@ -18,25 +18,29 @@
 .button-container {
     text-align: right; /* Align buttons to the right within the container */
     margin-top: 20px; /* Adjust margin as needed */
+    margin-right: 20px;
+    margin-bottom: 20px;
 }
 
 .credits-container1 {
     text-align: right;
     margin-right: 20px; /* Adjust margin as needed */
-    margin-bottom: 10px;
-    margin-top: 0px
+    margin-bottom: 0px;
+    margin-top: 10px
 }
 
 .credits-container2 {
     text-align: right;
     margin-right: 20px; /* Adjust margin as needed */
+    margin-top: 0px;
 }
 
-.header-container1 {
+.header-container {
     display: flex;
     justify-content: space-between; /* Align items with space between */
     align-items: flex-end; /* Vertically center items */
     margin-bottom: 0px; /* Adjust margin as needed */
+    margin-left: 30px;
 }
 
 
@@ -52,6 +56,7 @@ body {
     width: 1500px;
     max-width: 1500px; /* Adjust as needed */
     margin: 20px auto;
+    padding: 20px;
 }
 
 .box {
@@ -95,8 +100,12 @@ body {
     width: 100%;
     height: 10px;
     background-color: #D9D9D9;
-    margin: 2px;
+    margin: 0px;
     box-sizing: border-box; 
     text-align: left;
     padding: 5px;
+}
+
+.text {
+    margin-left: 30px;
 }

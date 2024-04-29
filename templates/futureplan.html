@@ -56,15 +56,19 @@
                             </div>
                         {% endfor %}
                     {% else %}
-                        <p>No courses planned for this semester</p>
+                            <p>No courses planned for this semester</p>
                     {% endif %}
                 </div>
         {% endfor %}
     </div>
     {% if is_valid %}
-    <p>Your plan meets the major requirements.</p>
+    <div class="text">
+        <p><span style="color: green; font:bold;">Your plan meets the major requirements.</span></p>
+    </div>
     {% else %}
-        <p>Your plan does not meet the major requirements. Please review and make necessary adjustments.</p>
+    <div class="text">
+        <p><span style="color: #931C22; font:bold;">Your plan does not meet the major requirements. Please review and make necessary adjustments.</span></p>
+    </div>
     {% endif %}
     <div class="button-container">
         <a href="{% url 'Plan:course_list' plan_id=plan_id plan_num=plan_num %}" class="courses-button" >Add/Edit Courses</a>
