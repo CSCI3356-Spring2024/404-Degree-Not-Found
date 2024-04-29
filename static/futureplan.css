@@ -7,12 +7,38 @@
     display: inline-block;
     margin: 5px; 
     transition: background-color 0.3s ease; 
+    float: right;
 }
 
 .courses-button:hover, .requirements-button:hover {
     background-color: #286897;
     color: #E1F2FF
 }
+
+.button-container {
+    text-align: right; /* Align buttons to the right within the container */
+    margin-top: 20px; /* Adjust margin as needed */
+}
+
+.credits-container1 {
+    text-align: right;
+    margin-right: 20px; /* Adjust margin as needed */
+    margin-bottom: 10px;
+    margin-top: 0px
+}
+
+.credits-container2 {
+    text-align: right;
+    margin-right: 20px; /* Adjust margin as needed */
+}
+
+.header-container1 {
+    display: flex;
+    justify-content: space-between; /* Align items with space between */
+    align-items: flex-end; /* Vertically center items */
+    margin-bottom: 0px; /* Adjust margin as needed */
+}
+
 
 body {
     margin: 0;
