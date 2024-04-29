@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib.auth import login, logout
 from .forms import EditStudentInfo, AddCourseToPlan, RemoveCourseFromPlan
-from .models import Student, Admin, Plan
+from .models import Student, Admin, Plan, Advisor
 from .api import fetch_course_data, fetch_courses
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -14,6 +14,8 @@ from .data import MAJOR_COURSE_MAP
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from .major_requirements import validate_major_requirements
+from datetime import datetime
+
 
 
 def signup_view(request):
@@ -54,6 +56,13 @@ def login_view(request):
 
 def landing_view(request):
     user = request.user
+    #testing if user is an advisor or a student, redirects to
+    try:
+        advisor = Advisor.objects.get(email=request.user.email)
+        return redirect('admin_landing')
+    except Advisor.DoesNotExist:
+        pass
+
     try:
         student = Student.objects.get(email=user.email)
     except Student.DoesNotExist:
@@ -80,6 +89,55 @@ def landing_view(request):
 
 
     return render(request, 'Landing.html', {'student': student, 'plans': plans, 'credits_percentage':credits_percentage}) 
+
+def admin_landing_view(request):
+    user = request.user
+    try:
+        advisor = Advisor.objects.get(email=user.email)
+    except Advisor.DoesNotExist:
+        return redirect('Plan:landing')
+
+    future_plans = Plan.objects.filter(s1__isnull=False)
+    
+    # Initialize a dictionary to store the course data
+    course_data = {}
+    
+    # Iterate over each plan and extract course information
+    for plan in future_plans:
+        entry_year = plan.student.entered
+        semesters = get_student_semesters(entry_year)
+        for semester_num in semesters:
+            course_codes = plan.__dict__[semester_num]
+            for course_code in course_codes:
+                # Extract the course code
+                if course_code:  # Ensure the course code is not None or empty
+                    # Increment the count of students who added the course code to their plan
+                    if course_code in course_data:
+                        course_data[course_code] += 1
+                    else:
+                        course_data[course_code] = 1
+    
+    # Prepare the data for rendering in the template
+    report_data = []
+    for course_key, student_count in course_data.items():
+        semester, course_name, course_number = course_key
+        report_data.append({
+            'semester': semester,
+            'course_name': course_name,
+            'course_number': course_number,
+            'student_count': student_count
+        })
+
+    return render(request, 'admin_landing.html', {'report_data': report_data})
+
+def get_student_semesters(entry_year):
+    current_year = int(datetime.now().year)
+    years_since_entry = current_year - int(entry_year)
+    semesters = []
+    for i in range(1, min(9, years_since_entry * 2 + 1)):
+        semesters.append(f's{i}')
+    return semesters
+    
 
 
 def profile_view(request):

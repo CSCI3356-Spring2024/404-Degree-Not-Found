@@ -25,4 +25,5 @@ urlpatterns = [
     path('reqs_list/', views.reqs_list_view, name='reqs_list'),
     path('set_primary_plan/', set_primary_plan, name='set_primary_plan'),
     path('remove_course/', views.remove_course, name='remove_course'),
+    path('admin_landing/', views.admin_landing_view, name='admin_landing'),
 ]
