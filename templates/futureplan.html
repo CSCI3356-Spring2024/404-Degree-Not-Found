@@ -60,9 +60,13 @@
     {% else %}
         <p>Your plan does not meet the major requirements. Please review and make necessary adjustments.</p>
     {% endif %}
+    {% if prereq_conflict %}
+    <p>Prerequisite conflict found with {{ prereq_conflict }}.</p>
+    {% else %}
+    <p>No prerequisite issues found.</p>
+    {% endif %}
     <a href="{% url 'Plan:course_list' plan_id=plan_id plan_num=plan_num %}" class="courses-button" >Add/Edit Courses</a>
     <a href="{% url 'Plan:reqs_list' %}" class="requirements-button">View Requirements</a>
-
 </body>
 </html>
 {% endblock %}
