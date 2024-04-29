@@ -14,8 +14,7 @@ from .data import MAJOR_COURSE_MAP
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from datetime import datetime
-
-
+from .major_requirements import validate_major_requirements
 
 
 def signup_view(request):
@@ -144,6 +143,7 @@ def future_plan_view(request, plan_id, plan_num):
     total_credits = plan.total_credits
 
     completed_credits = credits_completed(plan, user_entered_year)
+    student_major = student.major
 
     semester_names = {
         's1': 'Freshman Fall',
@@ -171,8 +171,9 @@ def future_plan_view(request, plan_id, plan_num):
             course_tuple_list.append(course_tuple)
         courses_by_semester.append((semester_num, course_tuple_list))
     
+    is_valid = validate_major_requirements(plan, student_major)
 
-    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester':courses_by_semester,'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits, 'completed_credits': completed_credits})
+    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester':courses_by_semester,'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits, 'completed_credits': completed_credits, "is_valid": is_valid})
 
 
 def course_list_view(request, plan_id, plan_num):
