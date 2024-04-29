@@ -10,9 +10,15 @@
     <title>Profile</title>
 </head>
 <body>
-    <h1>4-year Plan - Plan {{plan_num}} </h1>
-    <h3> Credits in Plan: {{total_credits}} / 120 </h3>
-    <h3> Completed Credits: {{completed_credits}} / 120 </h3>
+    <div class="header-container">
+        <h1>4 Year Plan - Plan {{plan_num}} </h1>
+        <div class="credits-container1">
+            <h3> Credits in Plan: {{total_credits}} / 120 </h3>
+        </div>
+    </div>
+    <div class="credits-container2">
+        <h3> Completed Credits: {{completed_credits}} / 120 </h3>
+    </div>
     <div class="container">
         {% for semester_num, course_list in courses_by_semester %}
                 <div class="box">
@@ -60,6 +66,7 @@
     {% else %}
         <p>Your plan does not meet the major requirements. Please review and make necessary adjustments.</p>
     {% endif %}
+<<<<<<< HEAD
     {% if prereq_conflict %}
     <p>Prerequisite conflict found with {{ prereq_conflict }}.</p>
     {% else %}
@@ -67,6 +74,12 @@
     {% endif %}
     <a href="{% url 'Plan:course_list' plan_id=plan_id plan_num=plan_num %}" class="courses-button" >Add/Edit Courses</a>
     <a href="{% url 'Plan:reqs_list' %}" class="requirements-button">View Requirements</a>
+=======
+    <div class="button-container">
+        <a href="{% url 'Plan:course_list' plan_id=plan_id plan_num=plan_num %}" class="courses-button" >Add/Edit Courses</a>
+        <a href="{% url 'Plan:reqs_list' %}" class="requirements-button">View Requirements</a>
+    </div>
+>>>>>>> 35de8128a8b8d5cfcb87486388e0d399589c86cf
 </body>
 </html>
 {% endblock %}
