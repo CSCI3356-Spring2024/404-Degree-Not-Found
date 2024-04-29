@@ -24,7 +24,7 @@ def validate_major_requirements(plan, major):
             "CSCI2271": 1,
             "CSCI2272": 1,
             "CSCI3383": 1,
-            "CSCI2260-2267": (1, ["CSCI2260", "CSCI2261", "CSCI2262", "CSCI2263", "CSCI2264", "CSCI2265", "CSCI2266", "CSCI2267"]),
+            "CSCI2267": 1,
             "CSCI3000+": (4, ["CSCI3383"]),
             "MATH1103 or MATH1105": (1, ["MATH1103", "MATH1105"]),
             "MATH2202": 1,
@@ -44,6 +44,17 @@ def validate_major_requirements(plan, major):
                 ["EESC1132"],  # Option 2
                 ["EESC2202", "EESC2203"],  # Option 3
             ]),
+        }
+    elif major == "Economics":
+        major_requirements = {
+            "ECON1101": 1,
+            "ECON1151": 1,
+            "ECON2201": 1,
+            "ECON2202": 1,
+            "ECON2228": 1,
+            "ECON2000+": (2, ["ECON2201, ECON2202, ECON2228"]),
+            "ECON3000+": 4,
+            "MATH1102": 1,
         }
 
     saved_courses = []
@@ -78,6 +89,7 @@ def validate_major_requirements(plan, major):
                 print("Not enough valid courses at 2000 level.")
                 return False
         elif req == "CSCI3000+":
+            print("CSCI3 ok")
             count_required, excluding_courses = value
             count_met = requirements_met[req]
             count_above_3000 = sum(1 for course in saved_courses if course.startswith("CSCI3") and course not in excluding_courses)
@@ -101,15 +113,18 @@ def validate_major_requirements(plan, major):
             count_required, courses = value
             count_met = requirements_met[req]
             for course in courses:
+                print("Evaluating course:", course)
                 if course in saved_courses:
                     count_met += 1
+            print(count_met)
             if count_met < count_required:
                 print("Not enough valid courses for MATH1103 or MATH1105.")
                 return False
         elif req == "MATH3000+":
             count_required, excluding_courses = value
             count_met = requirements_met[req]
-            count_math_3000 = sum(1 for course in saved_courses if course.startswith("MATH") and course != "MATH4426" and course not in excluding_courses)
+            count_math_3000 = sum(1 for course in saved_courses if course.startswith("MATH3") and course not in excluding_courses)
+            count_met += count_math_3000
             print("Count at 3000 level:", count_math_3000)
             if count_math_3000 < count_required:
                 print("Not enough valid courses at 3000 level.")
@@ -119,7 +134,8 @@ def validate_major_requirements(plan, major):
                     # Subtract the count of exclusion courses from the total required count
                     count_required -= requirements_met[exc_course]
             if count_met < count_required:
-                print("Not enough valid courses at 3000 level.")
+                print(count_met)
+                print("Not enough valid math courses at 3000 level.")
                 return False
         elif req == "Science with Lab":
             count_required, courses = value
@@ -130,6 +146,42 @@ def validate_major_requirements(plan, major):
                     break  # Stop loop once one option is satisfied
             if count_met < count_required:
                 print("Not enough valid science courses with lab.")
+                return False
+        elif req == "ECON2000+":
+            count_required, excluding_courses = value
+            count_met = requirements_met[req]
+            count_above_2000 = sum(1 for course in saved_courses if course.startswith("ECON2") and course not in excluding_courses)
+            print("Count above 2000 level:", count_above_2000)
+            for course in saved_courses:
+                if course.startswith("ECON2") and course not in excluding_courses:
+                    print("Evaluating course:", course)
+                    # Update count_met when a valid 3000 level course is encountered
+                    count_met += 1
+            if count_above_2000 < count_required:
+                print("Not enough courses above 2000 level.")
+                return False
+            for exc_course in excluding_courses:
+                if exc_course in requirements_met:
+                    # Subtract the count of exclusion courses from the total required count
+                    count_required -= requirements_met[exc_course]
+            if count_met < count_required:
+                print("Not enough valid courses above 2000 level.")
+                return False
+        elif req == "ECON3000+":
+            count_required = value
+            count_met = requirements_met[req]
+            count_above_3000 = sum(1 for course in saved_courses if course.startswith("ECON3"))
+            print("Count above 3000 level:", count_above_3000)
+            for course in saved_courses:
+                if course.startswith("ECON2") and course not in excluding_courses:
+                    print("Evaluating course:", course)
+                    # Update count_met when a valid 3000 level course is encountered
+                    count_met += 1
+            if count_above_3000 < count_required:
+                print("Not enough courses above 3000 level.")
+                return False
+            if count_met < count_required:
+                print("Not enough valid courses above 3000 level.")
                 return False
         elif isinstance(value, tuple):
             count_required, _ = value
