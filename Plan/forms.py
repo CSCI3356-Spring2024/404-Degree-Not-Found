@@ -76,7 +76,7 @@ class RemoveCourseFromPlan(forms.Form):
 
                 # Update total credits based on the course credits
                 data = fetch_course_data(course_id)
-                course_credits = data['credits']  # You need to implement this function
+                course_credits = data['credits'] 
                 plan.total_credits -= course_credits
                 plan.save()
                 return True
