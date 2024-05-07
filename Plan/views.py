@@ -226,7 +226,13 @@ def future_plan_view(request, plan_id, plan_num):
 
     user = request.user
     student = Student.objects.get(email=user.email)
-    user_entered_year = int(student.entered)
+    try:
+        user_entered_year = int(student.entered) if student.entered.isdigit() else None
+    except ValueError:
+        user_entered_year = None  
+    if user_entered_year is None:
+        return HttpResponseBadRequest("Invalid data for 'entered' year.")
+
     plan = get_object_or_404(Plan, student=student, id=plan_id)
     total_credits = plan.total_credits
 
