@@ -259,9 +259,10 @@ def future_plan_view(request, plan_id, plan_num):
             course_tuple_list.append(course_tuple)
         courses_by_semester.append((semester_num, course_tuple_list))
     
+    prereq_conflict = prereq_scanner(request, plan_id, plan_num)
     is_valid = validate_major_requirements(plan, student_major)
 
-    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester':courses_by_semester,'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits, 'completed_credits': completed_credits, "is_valid": is_valid})
+    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester':courses_by_semester,'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits, 'completed_credits': completed_credits, "is_valid": is_valid, "prereq_conflict": prereq_conflict})
 
 
 def course_list_view(request, plan_id, plan_num):
@@ -382,6 +383,33 @@ def remove_course(request):
     # If the form submission fails or the request method is not POST, redirect to some page
     return HttpResponseRedirect(reverse('Plan:landing'))  # Redirect to landing page
 
+def prereq_scanner(request, plan_id, plan_num):
+    user = request.user
+    student = Student.objects.get(email=user.email)
+    user_entered_year = int(student.entered)
+    plan = get_object_or_404(Plan, student=student, id=plan_id)
+    total_credits = plan.total_credits
+    semester_nums = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8']
+    all_courses = set()
+
+    courses_by_semester = {}
+    for semester_num in semester_nums:
+        course_codes = getattr(plan, semester_num, [])
+        courses_by_semester[semester_num] = course_codes
+        all_courses.update(course_codes)
+
+    prereq_conflict = False
+    for semester_num in sorted(semester_nums):
+        course_list = courses_by_semester[semester_num]
+        for course_code in course_list:
+            course_data = fetch_course_data(course_code)
+            prerequisites = course_data.get('prerequisites', [])
+            if any(prereq not in all_courses for prereq in prerequisites):
+                prereq_conflict = course_code
+                break
+        if prereq_conflict:
+            break
+    return prereq_conflict
     
 
 
