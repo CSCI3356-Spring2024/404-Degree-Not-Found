@@ -84,13 +84,13 @@ def landing_view(request):
     if primary_plan is not None:
         # Total Credits
         completed = credits_completed(primary_plan, int(student.entered))
-        credits_percentage = round((completed / credits_required) * 100,1)
+        credits_percentage = round((completed / credits_required) * 100)
         
         taken_courses = courses_completed(primary_plan,int(student.entered))
 
         # Major 1
         num_finished_req, num_req_needed, errormessages = validate_major_requirements(primary_plan, student.major, taken_courses)
-        major_percentage = round((num_finished_req / num_req_needed) * 100,1)
+        major_percentage = round((num_finished_req / num_req_needed) * 100)
 
         # Major 2
         if student.major2 == "Undeclared":
@@ -98,15 +98,17 @@ def landing_view(request):
             major2_percentage = 0
         else:
             num_finished_req2, num_req_needed2, errormessages2 = validate_major_requirements(primary_plan, student.major2, taken_courses)
-            major2_percentage = round((num_finished_req2 / num_req_needed2) * 100,1)
+            major2_percentage = round((num_finished_req2 / num_req_needed2) * 100)
     
         # University Core
         num_finished_req_univ, num_req_needed_univ, errormessages_univ = validate_university_requirements(primary_plan, taken_courses)
-        univ_percentage = round((num_finished_req_univ / num_req_needed_univ) * 100,1)
+        univ_percentage = round((num_finished_req_univ / num_req_needed_univ) * 100)
     else:
         current_credits = 0
         credits_percentage = 0
-
+        major_percentage = 0
+        major2_percentage = 0
+        univ_percentage = 0
 
     return render(request, 'Landing.html', {'student': student, 'plans': plans, 'credits_percentage':credits_percentage, 'major_percentage':major_percentage, 'major2_percentage':major2_percentage, 'univ_percentage': univ_percentage}) 
 
@@ -455,7 +457,7 @@ def remove_course(request):
             plan_num = form.cleaned_data['plan_num']
             semester_num = form.cleaned_data['semester_num'] 
             if form.remove_course():
-                return HttpResponseRedirect(reverse('Plan:futureplan', kwargs={'plan_id': plan_id, 'plan_num': plan_num}))
+                return redirect('Plan:futureplan', plan_id, plan_num)
             else:
                 print('Failed to remove course. Course or plan not found.')
         else:

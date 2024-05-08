@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <title>Profile</title>
     <link rel="stylesheet" href="{% static 'futureplan.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
@@ -66,61 +67,87 @@
                 </div>
         {% endfor %}
     </div>
-    {% if is_valid %}
-    <div class="text">
-        <p><span style="color: green; font-weight: bold;">Your plan meets the {{ student.major }} requirements.</span></p>
 
+    <!-- Add/Edit Courses Button -->
+    <div style="text-align:center; margin-top:20px; margin-bottom:100px;">
+        <a href="{% url 'Plan:course_list' plan_id=plan_id plan_num=plan_num %}" class="courses-button" >Add/Edit Courses</a>
+        <a href="{% url 'Plan:reqs_list' %}" class="requirements-button">View Requirements</a>
     </div>
-    {% else %}
-    <div class="text">
-        <p><span style="color: #931C22; font-weight:bold;">Your plan does not meet the {{ student.major }} requirements. Please review and make necessary adjustments.</span></p>
-        {% for error in errormessages %}
-                <p><span style="color: #931C22;">- {{ error }}</span></p>
-        {% endfor %}
+    
+    <!-- Horizontal Line -->
+    <hr style="margin-top: 20px; margin-bottom: 20px;">
+
+    <!-- Prereq Header -->
+    <h2 style="text-align:center;">Prerequisite Verification</h2>
+
+    <div class="text" style="text-align: center;"> <!-- Center the content -->
+        {% if prereq_conflict %}
+            <p>Prerequisite conflict found with {{ prereq_conflict }}.</p>
+        {% else %}
+            <p><span style="color: green; font-weight: bold;">No prerequisite issues found.</span></p>
+        {% endif %}
     </div>
-    {% endif %}
 
-    {% if is_valid2 %}
-    <div class="text">
-        <p><span style="color: green; font-weight: bold;">Your plan meets the {{ student.major2 }} requirements.</span></p>
+    <!-- Horizontal Line -->
+    <hr style="margin-top: 20px; margin-bottom: 20px;">
 
-    </div>
-    {% else %}
-    <div class="text">
-        <p><span style="color: #931C22; font-weight:bold;">Your plan does not meet the {{ student.major2 }} requirements. Please review and make necessary adjustments.</span></p>
-        {% for error in errormessages2 %}
-                <p><span style="color: #931C22;">- {{ error }}</span></p>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    {% if is_valid3 %}
-    <div class="text">
-        <p><span style="color: green; font-weight: bold;">Your plan meets the university requirements.</span></p>
-
-    </div>
-    {% else %}
-    <div class="text">
-        <p><span style="color: #931C22; font-weight:bold;">Your plan does not meet the university requirements. Please review and make necessary adjustments.</span></p>
-        {% for error in errormessages3 %}
-                <p><span style="color: #931C22;">- {{ error }}</span></p>
-        {% endfor %}
-    </div>
-    {% endif %}
+    <!-- Requirements Verification Header -->
+    <h2 style="text-align:center;">Requirements Verification</h2>
 
 
+        <div class="container">
+            <!-- Bootstrap Grid for Error Messages -->
+            <div class="row">
+                <!-- University Error Messages -->
+                <div class="col-md-4" style="border: 1px solid black; padding: 10px;">
+                    <h5>University Core</h5>
+                    {% if is_valid3 %}
+                    <p><span style="color: green; font-weight: bold;">Your plan meets the university requirements.</span></p>
+                    {% else %}
+                    {% for error in errormessages3 %}
+                        <p>• {{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
 
-    {% if prereq_conflict %}
-    <div class="text">
-        <p>Prerequisite conflict found with {{ prereq_conflict }}.</p>
-    </div>  
-    {% else %}
-    <div class="text">
-        <p>No prerequisite issues found.</p>
-    </div>
-    {% endif %}
-    <a href="{% url 'Plan:course_list' plan_id=plan_id plan_num=plan_num %}" class="courses-button" >Add/Edit Courses</a>
-    <a href="{% url 'Plan:reqs_list' %}" class="requirements-button">View Requirements</a>
+                <!-- Major Error Messages -->
+                <div class="col-md-4" style="border: 1px solid black; padding: 10px;">
+                        <h5>Major 1: {{ student.major }}</h5>
+                        {% if student.major != "Undeclared" %}
+                            {% if is_valid %}
+                            <p><span style="color: green; font-weight: bold;">Your plan meets the {{ student.major }} requirements.</span></p>
+                            {% else %}
+                            {% for error in errormessages %}
+                                <p>• {{ error }}</p>
+                            {% endfor %}
+                            {% endif %}
+
+                        
+                        {% endif %}
+
+                </div>
+
+                <!-- Major Error Messages -->
+                <div class="col-md-4" style="border: 1px solid black; padding: 10px;">
+                    <h5>Major 2: {{ student.major2 }}</h5>
+
+                    {% if student.major2 != "Undeclared" %}
+                        {% if is_valid2 %}
+                        <p><span style="color: green; font-weight: bold;">Your plan meets the {{ student.major2 }} requirements.</span></p>
+                        {% else %}
+                        {% for error in errormessages2 %}
+                            <p>• {{ error }}</p>
+                        {% endfor %}
+                        {% endif %}
+
+                    {% endif %}
+            </div>
+
+
+            </div>
+        </div>
+
+
 </body>
 </html>
 {% endblock %}

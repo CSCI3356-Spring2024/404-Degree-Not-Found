@@ -1,11 +1,17 @@
 
-def validate_major_requirements(plan, major, saved_courses = []):
+
+
+def validate_major_requirements(plan, major, saved_courses = None):
     # Initialize major_requirements with a default value
     major_requirements = {}
 
-    if saved_courses == []:
+    if saved_courses == None:
+        saved_courses = []
         for semester_num in ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8']:
             saved_courses.extend(plan.__dict__[semester_num])
+        print("Entire Progress")
+    else:
+        print("Completed Progress")
         
     # A function that checks if a single course is in the plan
     def course_in_plan(course_code):
@@ -32,7 +38,7 @@ def validate_major_requirements(plan, major, saved_courses = []):
         if count >= required_number:
             return required_number, None
         else:
-            return count, f"Only {count} {course_level}000 courses have been taken. Need {required_number-count} more!"
+            return count, f"{count} {course_level}000 courses have been taken. Need {required_number-count} more."
     
     # A function that counts the number of courses completed for a series of courses.
     # The student has the option to select which series of course to take
@@ -48,7 +54,9 @@ def validate_major_requirements(plan, major, saved_courses = []):
             return count, f"Science requirements for CS BS not met"
 
     # Get the major requirements based on the student's major
-    if major == "Computer Science BA":
+    if major == "Undeclared":
+        return 0, 100, ["You have not declared a major yet"]
+    elif major == "Computer Science BA":
         major_requirements = (11,[course_in_plan("CSCI1101"),
                                   course_in_plan("CSCI1102"),
                                   course_in_plan("CSCI2243"),
@@ -90,6 +98,13 @@ def validate_major_requirements(plan, major, saved_courses = []):
 
     finished_req = 0
     errormessages = []
+    print("MAJOR REQ")
+    print(saved_courses)
+    print(major)
+    print(major_requirements)
+    print()
+    print()
+    
     for req in major_requirements[1]:
         finished_req += req[0]
         if req[1]:
