@@ -16,7 +16,7 @@ from django.http import JsonResponse
 from datetime import datetime
 from .major_requirements import validate_major_requirements
 from .get_next_semester import get_current_semester, get_upcoming_semesters
-
+from .university_requirements import validate_university_requirements
 
 
 def signup_view(request):
@@ -82,14 +82,33 @@ def landing_view(request):
 
     credits_required = 120
     if primary_plan is not None:
+        # Total Credits
         completed = credits_completed(primary_plan, int(student.entered))
         credits_percentage = round((completed / credits_required) * 100,1)
+        
+        taken_courses = courses_completed(primary_plan,int(student.entered))
+
+        # Major 1
+        num_finished_req, num_req_needed, errormessages = validate_major_requirements(primary_plan, student.major, taken_courses)
+        major_percentage = round((num_finished_req / num_req_needed) * 100,1)
+
+        # Major 2
+        if student.major2 == "Undeclared":
+            num_finished_req2, num_req_needed2, errormessages2 = 0,0,[]
+            major2_percentage = 0
+        else:
+            num_finished_req2, num_req_needed2, errormessages2 = validate_major_requirements(primary_plan, student.major2, taken_courses)
+            major2_percentage = round((num_finished_req2 / num_req_needed2) * 100,1)
+    
+        # University Core
+        num_finished_req_univ, num_req_needed_univ, errormessages_univ = validate_university_requirements(primary_plan, taken_courses)
+        univ_percentage = round((num_finished_req_univ / num_req_needed_univ) * 100,1)
     else:
         current_credits = 0
         credits_percentage = 0
 
 
-    return render(request, 'Landing.html', {'student': student, 'plans': plans, 'credits_percentage':credits_percentage}) 
+    return render(request, 'Landing.html', {'student': student, 'plans': plans, 'credits_percentage':credits_percentage, 'major_percentage':major_percentage, 'major2_percentage':major2_percentage, 'univ_percentage': univ_percentage}) 
 
 def admin_landing_view(request):
     user = request.user
@@ -239,6 +258,27 @@ def credits_completed(plan, entered_year):
             break
     return completed_credits
 
+def courses_completed(plan,entered_year):
+    completed_dates = [
+        (entered_year,8,26),
+        (entered_year+1,1,13),
+        (entered_year+1,8,26),
+        (entered_year+2,1,13),
+        (entered_year+2,8,26),
+        (entered_year+3,1,13),
+        (entered_year+3,8,26),
+        (entered_year+4,1,13)  
+    ]
+
+    plan_objects = [plan.s1, plan.s2,plan.s3,plan.s4,plan.s5,plan.s6,plan.s7,plan.s8]
+    courses_taken = []
+    for semester, dates in zip(plan_objects, completed_dates):
+        if is_date_passed(dates[0],dates[1],dates[2]):
+            for coursecode in semester:
+                courses_taken.append(coursecode)
+    return courses_taken
+
+
 def prereq_scanner(request, plan_id, plan_num):
     user = request.user
     student = Student.objects.get(email=user.email)
@@ -277,6 +317,7 @@ def future_plan_view(request, plan_id, plan_num):
 
     completed_credits = credits_completed(plan, user_entered_year)
     student_major = student.major
+    student_major2 = student.major2
 
     semester_names = {
         's1': 'Freshman Fall',
@@ -305,9 +346,15 @@ def future_plan_view(request, plan_id, plan_num):
         courses_by_semester.append((semester_num, course_tuple_list))
     
     prereq_conflict = prereq_scanner(request, plan_id, plan_num)
-    is_valid = validate_major_requirements(plan, student_major)
+    num_finished_req, num_req_needed, errormessages = validate_major_requirements(plan, student_major)
+    num_finished_req2, num_req_needed2, errormessages2 = validate_major_requirements(plan, student_major2)
+    num_finished_req3, num_req_needed3, errormessages3 = validate_university_requirements(plan)
 
-    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester':courses_by_semester,'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits, 'completed_credits': completed_credits, "is_valid": is_valid, "prereq_conflict": prereq_conflict})
+    is_valid = num_finished_req >= num_req_needed
+    is_valid2 = num_finished_req2 >= num_req_needed2
+    is_valid3 = num_finished_req3 >= num_req_needed3
+
+    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester':courses_by_semester,'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits, 'completed_credits': completed_credits, "is_valid": is_valid, "is_valid2":is_valid2, "is_valid3":is_valid3,"prereq_conflict": prereq_conflict, "errormessages": errormessages, "errormessages2": errormessages2,"errormessages3": errormessages3})
 
 
 def course_list_view(request, plan_id, plan_num):
