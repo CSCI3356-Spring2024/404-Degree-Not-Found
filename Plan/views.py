@@ -140,7 +140,8 @@ def admin_landing_view(request):
                     'student_count': student_count
                 })
 
-    report_data_sorted = sorted(report_data, key=lambda x: (int(x['semester'][-4:]), x['semester'][:5]))
+
+    report_data_sorted = sorted(report_data, key=lambda x: (int(x['semester'][-4:]), '0' if 'Spring' in x['semester'] else '1', x['semester'][:5]))
 
     return render(request, 'admin_landing.html', {'report_data': report_data_sorted})
 
