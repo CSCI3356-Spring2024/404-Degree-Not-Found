@@ -269,12 +269,8 @@ def future_plan_view(request, plan_id, plan_num):
     
     prereq_conflict = prereq_scanner(request, plan_id, plan_num)
     is_valid = validate_major_requirements(plan, student_major)
-<<<<<<< HEAD
-    return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester':courses_by_semester,'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits, 'completed_credits': completed_credits, "is_valid": is_valid})
-=======
 
     return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester':courses_by_semester,'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits, 'completed_credits': completed_credits, "is_valid": is_valid, "prereq_conflict": prereq_conflict})
->>>>>>> refs/remotes/origin/main
 
 
 def course_list_view(request, plan_id, plan_num):
