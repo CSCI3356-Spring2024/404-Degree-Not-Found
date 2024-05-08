@@ -32,7 +32,7 @@ def validate_major_requirements(plan, major, saved_courses = []):
         if count >= required_number:
             return required_number, None
         else:
-            return count, f"Only {count} {course_level}000 courses have been taken. Need {required_number-count} more!"
+            return count, f"{count} {course_level}000 courses have been taken. Need {required_number-count} more."
     
     # A function that counts the number of courses completed for a series of courses.
     # The student has the option to select which series of course to take

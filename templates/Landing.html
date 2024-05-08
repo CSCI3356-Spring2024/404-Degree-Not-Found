@@ -15,31 +15,28 @@
             {% if student.major != "Undeclared" %}
             <h3>{{ student.major }}</h3>
             <div class="rectangle" style="position: relative;">
-                <div class="progress" style="position: absolute; top: 0; left: 0; width: {{ completion_percentage }}%; height: 100%; background-color: gold;"></div>
-                <div class="progress-bar" style="width: {{ major_percentage }}%; height: 100%; background-color: #B29D6C;">{{ major_percentage }}%</div>
+                <div class="progress" style="position: absolute; top: 0; left: 0; width: {{ major_percentage }}%; height: 100%; background-color: #B29D6C;">{{ major_percentage }}%</div>
             </div>
             {% endif %}
             {% if student.major2 != "Undeclared" %}
             <h3>{{ student.major2 }}</h3>
             <div class="rectangle" style="position: relative;">
-                <div class="progress" style="position: absolute; top: 0; left: 0; width: {{ completion_percentage }}%; height: 100%; background-color: gold;"></div>
-                <div class="progress-bar" style="width: {{ major2_percentage }}%; height: 100%; background-color: #B29D6C;">{{ major2_percentage }}%</div>
+                <div class="progress" style="position: absolute; top: 0; left: 0; width: {{ major2_percentage }}%; height: 100%; background-color: #B29D6C;">{{ major2_percentage }}%</div>
             </div>
             {% endif %}
 
             <h2>University Core</h2>
             <div class="rectangle" style="position: relative;">
-                <div class="progress" style="position: absolute; top: 0; left: 0; width: {{ completion_percentage }}%; height: 100%; background-color: gold;"></div>
-                <div class="progress-bar" style="width: {{ univ_percentage }}%; height: 100%; background-color: #B29D6C;">{{ univ_percentage }}%</div>
+                <div class="progress" style="position: absolute; top: 0; left: 0; width: {{ univ_percentage }}%; height: 100%; background-color: #B29D6C;">{{ univ_percentage }}%</div>
             </div>
             <h2>Total Credits</h2>
             <div class="rectangle" style="position: relative;">
-                <div class="progress" style="position: absolute; top: 0; left: 0; width: {{ completion_percentage }}%; height: 100%; background-color: gold;"></div>
-                <div class="progress-bar" style="display: flex; width: {{ credits_percentage }}%; height: 100%; background-color: #B29D6C;">{{ credits_percentage }}%</div>            </div>
+                <div class="progress" style="position: absolute; top: 0; left: 0; width: {{ credits_percentage }}%; height: 100%; background-color: #B29D6C;">{{ credits_percentage }}%</div>
             </div>
             <div style="position: absolute; bottom: 0; left: 0;">
                 <p>The percentage shown is based on completed courses.</p>
             </div>
+        </div>
         <div class="right-side">
             <div class="button-container">
                 <form method="post" id="primary-plan-form" action="{% url 'Plan:set_primary_plan' %}">
