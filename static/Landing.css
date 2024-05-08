@@ -93,9 +93,18 @@ a {
     position: absolute;
     top: 0;
     left: 0;
-    background-color: #B29D6C; /* Color of the progress bar */
+    background-color: #B29D6C; 
+} 
+
+.progress_bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; 
 }
 
+<<<<<<< HEAD
+=======
 .progress-bar {
     position: relative;
     overflow: hidden; /* Ensure the percentage label doesn't overflow outside the progress bar */
@@ -115,3 +124,4 @@ a {
 
 
 
+>>>>>>> refs/remotes/origin/main
