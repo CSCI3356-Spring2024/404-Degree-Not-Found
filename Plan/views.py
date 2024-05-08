@@ -15,7 +15,7 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from datetime import datetime
 from .major_requirements import validate_major_requirements
-from .get_next_semester import get_current_semester, get_upcoming_semesters
+from .get_next_semester import get_current_semester, get_upcoming_semesters, get_total_semesters
 from .university_requirements import validate_university_requirements
 
 
@@ -117,26 +117,20 @@ def admin_landing_view(request):
     except Advisor.DoesNotExist:
         return redirect('Plan:landing')
 
-    # Only fetch plans that are primary
     primary_plans = Plan.objects.filter(s1__isnull=False, is_primary=True)
 
-    # Initialize a dictionary to store the course data
     course_data = {}
 
-    # Iterate over each primary plan and extract course information
     for plan in primary_plans:
-        # Get the entry year of the student
         entry_year = plan.student.entered
-        # Get the list of semesters for the student based on their entry year
         current_semester, _ = get_current_semester(entry_year)
-        semesters = get_upcoming_semesters(current_semester)
+        total_semesters = get_total_semesters(entry_year)
+        semesters = get_upcoming_semesters(current_semester, total_semesters)
         for semester_num, semester_name in semesters.items():
             print(f"Processing Semester: {semester_name}")
             course_codes = plan.__dict__[semester_num]
             for course_code in course_codes:
-                # Extract the course code
-                if course_code:  # Ensure the course code is not None or empty
-                    # Increment the count of students who added the course code to their plan
+                if course_code:
                     if semester_name not in course_data:
                         course_data[semester_name] = {}
                     if course_code in course_data[semester_name]:
@@ -144,14 +138,11 @@ def admin_landing_view(request):
                     else:
                         course_data[semester_name][course_code] = 1
 
-    # Prepare the data for rendering in the template
     report_data = []
     for semester, course_counts in course_data.items():
         for course_code, student_count in course_counts.items():
-            # Fetch course data from the API
             course_info = fetch_course_data(course_code)
             if course_info:
-                # Extract course name and number from course data
                 course_name = course_info.get('title', 'Unknown')
                 course_number = course_info.get('course_code', 'Unknown')
                 report_data.append({
@@ -161,7 +152,6 @@ def admin_landing_view(request):
                     'student_count': student_count
                 })
             else:
-                # Handle case where course data could not be fetched
                 report_data.append({
                     'semester': semester,
                     'course_name': 'Unknown',
@@ -169,26 +159,25 @@ def admin_landing_view(request):
                     'student_count': student_count
                 })
 
-    return render(request, 'admin_landing.html', {'report_data': report_data})
+
+    report_data_sorted = sorted(report_data, key=lambda x: (int(x['semester'][-4:]), '0' if 'Spring' in x['semester'] else '1', x['semester'][:5]))
+
+    return render(request, 'admin_landing.html', {'report_data': report_data_sorted})
 
 def get_student_semesters(entry_year):
     current_year = datetime.now().year
     current_month = datetime.now().month
     entry_year = int(entry_year)
 
-    # Determine the entry semester based on the current month
     entry_semester = "Fall" if current_month >= 8 else "Spring"
 
-    # Calculate the number of years since entry
     years_since_entry = current_year - entry_year
 
-    # Calculate the total number of semesters (max 8)
     total_semesters = min(years_since_entry * 2, 8)
 
-    # Initialize a dictionary to store the semester codes and names
+
     semesters = {}
 
-    # Generate semester codes and names based on the entry semester and total semesters
     for i in range(1, total_semesters + 1):
         if entry_semester == "Fall":
             year = entry_year + (i - 1) // 2
@@ -250,10 +239,7 @@ def credits_completed(plan, entered_year):
         if is_date_passed(dates[0],dates[1],dates[2]):
             for coursecode in semester:
                 data = fetch_course_data(coursecode)
-                try:
-                    completed_credits += data["credits"]
-                except:
-                    pass
+                completed_credits += data["credits"]
         else:
             break
     return completed_credits
@@ -311,7 +297,13 @@ def future_plan_view(request, plan_id, plan_num):
 
     user = request.user
     student = Student.objects.get(email=user.email)
-    user_entered_year = int(student.entered)
+    try:
+        user_entered_year = int(student.entered) if student.entered.isdigit() else None
+    except ValueError:
+        user_entered_year = None  
+    if user_entered_year is None:
+        return HttpResponseBadRequest("Invalid data for 'entered' year.")
+
     plan = get_object_or_404(Plan, student=student, id=plan_id)
     total_credits = plan.total_credits
 
@@ -331,7 +323,7 @@ def future_plan_view(request, plan_id, plan_num):
     }
 
     semester_nums = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8']
-    courses_by_semester = {sem: getattr(plan, sem, []) for sem in semester_nums}
+
 
     # courses_by_semester = [(semester_num, getattr(plan, semester_num, [])) for semester_num in semester_nums]
     courses_by_semester = []
@@ -459,11 +451,10 @@ def remove_course(request):
     if request.method == 'POST':
         form = RemoveCourseFromPlan(request.POST)
         if form.is_valid():
-            plan_id = form.cleaned_data['plan_id']  # Assuming you have plan_id in your form
+            plan_id = form.cleaned_data['plan_id']
             plan_num = form.cleaned_data['plan_num']
-            semester_num = form.cleaned_data['semester_num']  # Assuming you have plan_num in your form
+            semester_num = form.cleaned_data['semester_num'] 
             if form.remove_course():
-                # Assuming you have access to plan_id and plan_num in your view
                 return HttpResponseRedirect(reverse('Plan:futureplan', kwargs={'plan_id': plan_id, 'plan_num': plan_num}))
             else:
                 print('Failed to remove course. Course or plan not found.')
@@ -472,9 +463,39 @@ def remove_course(request):
     else:
         print('Request method is not POST.')
 
-    # If the form submission fails or the request method is not POST, redirect to some page
-    return HttpResponseRedirect(reverse('Plan:landing'))  # Redirect to landing page
+    return HttpResponseRedirect(reverse('Plan:landing'))
 
+def prereq_scanner(request, plan_id, plan_num):
+    user = request.user
+    student = Student.objects.get(email=user.email)
+    user_entered_year = int(student.entered)
+    plan = get_object_or_404(Plan, student=student, id=plan_id)
+    total_credits = plan.total_credits
+    semester_nums = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8']
+    all_courses = set()
+
+    courses_sem = {}
+    for indx, semester_num in enumerate(semester_nums):
+        course_codes = getattr(plan, semester_num, [])
+        for each in course_codes:
+            courses_sem[each] = indx
+
+    prereq_conflict = False
+    for semester_num in semester_nums:
+        course_list = getattr(plan, semester_num, [])
+        for course_code in course_list:
+            course_data = fetch_course_data(course_code)
+            prerequisites = course_data.get('prerequisites', [])
+            for prereq in prerequisites:
+                if prereq not in courses_sem:
+                    prereq_conflict = course_code
+                    break
+                if courses_sem[prereq] >= courses_sem[course_code]:
+                    prereq_conflict = course_code
+                    break
+        if prereq_conflict:
+            break
+    return prereq_conflict
     
 
 

@@ -130,7 +130,6 @@ class EditStudentInfo(forms.ModelForm):
         ('2021', '2021'),
         ('2022', '2022'),
         ('2023', '2023'),
-        ('2024', '2024')
     ]
 
     GRAD_YEAR_CHOICES = [
@@ -139,7 +138,6 @@ class EditStudentInfo(forms.ModelForm):
         ('2025', '2025'),
         ('2026', '2026'),
         ('2027', '2027'),
-        ('2028', '2028')
     ]
 
     def validate_major(value):

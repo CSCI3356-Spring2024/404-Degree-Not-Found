@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'widget_tweaks'
+    'widget_tweaks',
+    'bootstrap5',
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
