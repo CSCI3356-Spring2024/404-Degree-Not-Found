@@ -14,22 +14,22 @@ a {
     padding: 20px;
 }
 
-.left-side, .right-side {
+
+.left-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: flex-start;
+    width: 50%;
+}
+
+.right-side {
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: center;
     width: 50%;
 }
-
-/* .rectangle {
-    border: 1px solid black;
-    width: 300px;
-    height: 30px;
-    margin: 10px 0;
-    padding: 10px;
-    text-align: left;
-} */
 
 .button {
     text-decoration: none;
@@ -45,11 +45,6 @@ a {
     color: white;
     border-radius: 5px;
     font-size: 30px;
-}
-
-.right-side {
-    justify-content: center;
-    align-items: center;
 }
 
 .button-container {
@@ -76,15 +71,22 @@ a {
     font-size: smaller;
 }
 
+.bar-label {
+    display: inline-block;
+    margin-right: auto;
+    font-weight: bold;
+}
+
 .rectangle {
+    display: inline-block;
     position: relative;
     width: 500px; /* Adjust width as needed */
     height: 30px; /* Adjust height as needed */
     border: 1px solid black; /* Add border style */
-    margin: 10px 0; /* Adjust margin as needed */
-    padding: 0; /* Remove padding */
     box-sizing: border-box; /* Include border in the height and width */
     background-color: E1F2FF;
+    text-align: left;
+    padding-left: 30px;
 }
 
 .progress {
@@ -102,7 +104,7 @@ a {
 .percentage-label {
     position: absolute;
     top: 0;
-    left: 100%; /* Position the label to the right side of the colored bar */
+    right: 0;
     transform: translateX(10px); /* Add some space between the bar and the label */
     height: 100%;
     line-height: 40px; /* Align the text vertically in the middle */
