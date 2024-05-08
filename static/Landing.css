@@ -101,3 +101,25 @@ a {
     height: 100%; 
 }
 
+<<<<<<< HEAD
+=======
+.progress-bar {
+    position: relative;
+    overflow: hidden; /* Ensure the percentage label doesn't overflow outside the progress bar */
+}
+
+.percentage-label {
+    position: absolute;
+    top: 0;
+    left: 100%; /* Position the label to the right side of the colored bar */
+    transform: translateX(10px); /* Add some space between the bar and the label */
+    height: 100%;
+    line-height: 40px; /* Align the text vertically in the middle */
+    color: white;
+    font-weight: bold;
+    text-align: right; /* Align the text to the right within the label */
+}
+
+
+
+>>>>>>> refs/remotes/origin/main
