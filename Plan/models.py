@@ -23,7 +23,6 @@ class Student(User):
 class Advisor(User):
     department = models.CharField(max_length = 200, default=" ")
     school = models.CharField(max_length = 200, default=" ")
-    students = models.ManyToManyField(Student, blank=True)
     pass
 
 class Admin(User):

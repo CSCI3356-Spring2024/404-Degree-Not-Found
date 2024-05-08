@@ -140,7 +140,9 @@ def admin_landing_view(request):
                     'student_count': student_count
                 })
 
-    return render(request, 'admin_landing.html', {'report_data': report_data})
+    report_data_sorted = sorted(report_data, key=lambda x: (int(x['semester'][-4:]), x['semester'][:5]))
+
+    return render(request, 'admin_landing.html', {'report_data': report_data_sorted})
 
 def get_student_semesters(entry_year):
     current_year = datetime.now().year
