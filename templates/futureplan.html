@@ -22,25 +22,27 @@
     <div class="container">
         {% for semester_num, course_list in courses_by_semester %}
                 <div class="box">
-                    <div class="semester-name"><b><div class="semester-name"><b>
-                    {% if semester_num == 's1' %}
-                        Freshman Fall
-                    {% elif semester_num == 's2' %}
-                        Freshman Spring
-                    {% elif semester_num == 's3' %}
-                        Sophomore Fall
-                    {% elif semester_num == 's4' %}
-                        Sophomore Spring
-                    {% elif semester_num == 's5' %}
-                        Junior Fall
-                    {% elif semester_num == 's6' %}
-                        Junior Spring
-                    {% elif semester_num == 's7' %}
-                        Senior Fall
-                    {% elif semester_num == 's8' %}
-                        Senior Spring
-                    {% endif %}
-                </b></div></b></div>
+                    <div class="semester-name">
+                    <b>
+                        {% if semester_num == 's1' %}
+                            Freshman Fall
+                        {% elif semester_num == 's2' %}
+                            Freshman Spring
+                        {% elif semester_num == 's3' %}
+                            Sophomore Fall
+                        {% elif semester_num == 's4' %}
+                            Sophomore Spring
+                        {% elif semester_num == 's5' %}
+                            Junior Fall
+                        {% elif semester_num == 's6' %}
+                            Junior Spring
+                        {% elif semester_num == 's7' %}
+                            Senior Fall
+                        {% elif semester_num == 's8' %}
+                            Senior Spring
+                        {% endif %}
+                    </b>
+                    </div>
                     {% if course_list %}
                         {% for course_tuple in course_list %}
                             <div class="course-rectangle">
@@ -71,9 +73,13 @@
     </div>
     {% endif %}
     {% if prereq_conflict %}
-    <p>Prerequisite conflict found with {{ prereq_conflict }}.</p>
+    <div class="text">
+        <p>Prerequisite conflict found with {{ prereq_conflict }}.</p>
+    </div>  
     {% else %}
-    <p>No prerequisite issues found.</p>
+    <div class="text">
+        <p>No prerequisite issues found.</p>
+    </div>
     {% endif %}
     <a href="{% url 'Plan:course_list' plan_id=plan_id plan_num=plan_num %}" class="courses-button" >Add/Edit Courses</a>
     <a href="{% url 'Plan:reqs_list' %}" class="requirements-button">View Requirements</a>

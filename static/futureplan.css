@@ -72,7 +72,7 @@ body {
 
 .course-rectangle {
     display: flex;
-    align-items: center;
+    align-items: start;
     justify-content: space-between;
     width: 100%;
     height: 40px;
@@ -81,6 +81,7 @@ body {
     box-sizing: border-box; 
     border: 1px solid #999;
 }
+
 
 .course-rectangle .course-number {
     flex: 1;
