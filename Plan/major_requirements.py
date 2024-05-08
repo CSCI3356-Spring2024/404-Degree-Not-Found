@@ -48,7 +48,9 @@ def validate_major_requirements(plan, major, saved_courses = []):
             return count, f"Science requirements for CS BS not met"
 
     # Get the major requirements based on the student's major
-    if major == "Computer Science BA":
+    if major == "Undeclared":
+        return 0, 100, ["You have not declared a major yet"]
+    elif major == "Computer Science BA":
         major_requirements = (11,[course_in_plan("CSCI1101"),
                                   course_in_plan("CSCI1102"),
                                   course_in_plan("CSCI2243"),
@@ -90,6 +92,10 @@ def validate_major_requirements(plan, major, saved_courses = []):
 
     finished_req = 0
     errormessages = []
+    print("MAJOR REQ")
+    print(major)
+    print(major_requirements)
+    
     for req in major_requirements[1]:
         finished_req += req[0]
         if req[1]:

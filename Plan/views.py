@@ -90,7 +90,7 @@ def landing_view(request):
 
         # Major 1
         num_finished_req, num_req_needed, errormessages = validate_major_requirements(primary_plan, student.major, taken_courses)
-        major_percentage = round((num_finished_req / num_req_needed) * 100,1)
+        major_percentage = round((num_finished_req / num_req_needed) * 100)
 
         # Major 2
         if student.major2 == "Undeclared":
@@ -98,15 +98,17 @@ def landing_view(request):
             major2_percentage = 0
         else:
             num_finished_req2, num_req_needed2, errormessages2 = validate_major_requirements(primary_plan, student.major2, taken_courses)
-            major2_percentage = round((num_finished_req2 / num_req_needed2) * 100,1)
+            major2_percentage = round((num_finished_req2 / num_req_needed2) * 100)
     
         # University Core
         num_finished_req_univ, num_req_needed_univ, errormessages_univ = validate_university_requirements(primary_plan, taken_courses)
-        univ_percentage = round((num_finished_req_univ / num_req_needed_univ) * 100,1)
+        univ_percentage = round((num_finished_req_univ / num_req_needed_univ) * 100)
     else:
         current_credits = 0
         credits_percentage = 0
-
+        major_percentage = 0
+        major2_percentage = 0
+        univ_percentage = 0
 
     return render(request, 'Landing.html', {'student': student, 'plans': plans, 'credits_percentage':credits_percentage, 'major_percentage':major_percentage, 'major2_percentage':major2_percentage, 'univ_percentage': univ_percentage}) 
 

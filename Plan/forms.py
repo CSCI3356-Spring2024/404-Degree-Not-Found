@@ -115,7 +115,7 @@ class EditStudentInfo(forms.ModelForm):
         ('Computer Science BA', 'Computer Science BA'),
         ('Computer Science BS', 'Computer Science BS'),
         ('Economics', 'Economics'),
-        ('Math', 'Math')
+        # ('Math', 'Math')
     ]
 
     MINOR_CHOICES = [

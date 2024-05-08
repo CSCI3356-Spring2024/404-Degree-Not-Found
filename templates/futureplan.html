@@ -65,18 +65,36 @@
                 </div>
         {% endfor %}
     </div>
+    {% if prereq_conflict %}
+    <div class="text">
+        <p><span style="color: #931C22; font-weight: bold;">Prerequisite conflict found with {{ prereq_conflict }}.</span></p>
+    </div>  
+    {% else %}
+    <div class="text">
+        <p><span style="color: green; font-weight: bold;">No prerequisite issues found.</span></p>
+    </div>
+    {% endif %}
+    
+    {% if student.major == "Undeclared" and student.major2 == "Undeclared" %}
+    <div class="text">
+        <p><span style="color: #931C22; font-weight:bold;">Your have not declared a major yet.</span></p>
+    </div>  
+        {% endif %}
+
     {% if is_valid %}
     <div class="text">
         <p><span style="color: green; font-weight: bold;">Your plan meets the {{ student.major }} requirements.</span></p>
 
     </div>
     {% else %}
-    <div class="text">
-        <p><span style="color: #931C22; font-weight:bold;">Your plan does not meet the {{ student.major }} requirements. Please review and make necessary adjustments.</span></p>
-        {% for error in errormessages %}
-                <p><span style="color: #931C22;">- {{ error }}</span></p>
-        {% endfor %}
-    </div>
+        {% if student.major != "Undeclared" %}
+            <div class="text">
+                <p><span style="color: #931C22; font-weight:bold;">Your plan does not meet the {{ student.major }} requirements.</span></p>
+                {% for error in errormessages %}
+                        <p><span style="color: #931C22;">- {{ error }}</span></p>
+                {% endfor %}
+            </div>
+        {% endif %}
     {% endif %}
 
     {% if is_valid2 %}
@@ -85,12 +103,14 @@
 
     </div>
     {% else %}
-    <div class="text">
-        <p><span style="color: #931C22; font-weight:bold;">Your plan does not meet the {{ student.major2 }} requirements. Please review and make necessary adjustments.</span></p>
-        {% for error in errormessages2 %}
-                <p><span style="color: #931C22;">- {{ error }}</span></p>
-        {% endfor %}
-    </div>
+        {% if student.major2 != "Undeclared" %}
+            <div class="text">
+                <p><span style="color: #931C22; font-weight:bold;">Your plan does not meet the {{ student.major2 }} requirements.</span></p>
+                {% for error in errormessages2 %}
+                        <p><span style="color: #931C22;">- {{ error }}</span></p>
+                {% endfor %}
+            </div>
+        {% endif %}
     {% endif %}
 
     {% if is_valid3 %}
@@ -100,7 +120,7 @@
     </div>
     {% else %}
     <div class="text">
-        <p><span style="color: #931C22; font-weight:bold;">Your plan does not meet the university requirements. Please review and make necessary adjustments.</span></p>
+        <p><span style="color: #931C22; font-weight:bold;">Your plan does not meet the University requirements.</span></p>
         {% for error in errormessages3 %}
                 <p><span style="color: #931C22;">- {{ error }}</span></p>
         {% endfor %}
@@ -108,16 +128,6 @@
     {% endif %}
 
 
-
-    {% if prereq_conflict %}
-    <div class="text">
-        <p>Prerequisite conflict found with {{ prereq_conflict }}.</p>
-    </div>  
-    {% else %}
-    <div class="text">
-        <p>No prerequisite issues found.</p>
-    </div>
-    {% endif %}
     <a href="{% url 'Plan:course_list' plan_id=plan_id plan_num=plan_num %}" class="courses-button" >Add/Edit Courses</a>
     <a href="{% url 'Plan:reqs_list' %}" class="requirements-button">View Requirements</a>
 </body>
