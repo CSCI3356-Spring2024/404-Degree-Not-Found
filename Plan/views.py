@@ -375,11 +375,10 @@ def remove_course(request):
     if request.method == 'POST':
         form = RemoveCourseFromPlan(request.POST)
         if form.is_valid():
-            plan_id = form.cleaned_data['plan_id']  # Assuming you have plan_id in your form
+            plan_id = form.cleaned_data['plan_id']
             plan_num = form.cleaned_data['plan_num']
-            semester_num = form.cleaned_data['semester_num']  # Assuming you have plan_num in your form
+            semester_num = form.cleaned_data['semester_num'] 
             if form.remove_course():
-                # Assuming you have access to plan_id and plan_num in your view
                 return HttpResponseRedirect(reverse('Plan:futureplan', kwargs={'plan_id': plan_id, 'plan_num': plan_num}))
             else:
                 print('Failed to remove course. Course or plan not found.')
@@ -388,8 +387,7 @@ def remove_course(request):
     else:
         print('Request method is not POST.')
 
-    # If the form submission fails or the request method is not POST, redirect to some page
-    return HttpResponseRedirect(reverse('Plan:landing'))  # Redirect to landing page
+    return HttpResponseRedirect(reverse('Plan:landing'))
 
 def prereq_scanner(request, plan_id, plan_num):
     user = request.user
@@ -400,21 +398,25 @@ def prereq_scanner(request, plan_id, plan_num):
     semester_nums = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8']
     all_courses = set()
 
-    courses_by_semester = {}
-    for semester_num in semester_nums:
+    courses_sem = {}
+    for indx, semester_num in enumerate(semester_nums):
         course_codes = getattr(plan, semester_num, [])
-        courses_by_semester[semester_num] = course_codes
-        all_courses.update(course_codes)
+        for each in course_codes:
+            courses_sem[each] = indx
 
     prereq_conflict = False
-    for semester_num in sorted(semester_nums):
-        course_list = courses_by_semester[semester_num]
+    for semester_num in semester_nums:
+        course_list = getattr(plan, semester_num, [])
         for course_code in course_list:
             course_data = fetch_course_data(course_code)
             prerequisites = course_data.get('prerequisites', [])
-            if any(prereq not in all_courses for prereq in prerequisites):
-                prereq_conflict = course_code
-                break
+            for prereq in prerequisites:
+                if prereq not in courses_sem:
+                    prereq_conflict = course_code
+                    break
+                if courses_sem[prereq] >= courses_sem[course_code]:
+                    prereq_conflict = course_code
+                    break
         if prereq_conflict:
             break
     return prereq_conflict
