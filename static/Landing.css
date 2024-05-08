@@ -91,9 +91,13 @@ a {
     position: absolute;
     top: 0;
     left: 0;
-    background-color: #B29D6C; /* Color of the progress bar */
+    background-color: #B29D6C; 
+} 
+
+.progress_bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; 
 }
-
-
-
 

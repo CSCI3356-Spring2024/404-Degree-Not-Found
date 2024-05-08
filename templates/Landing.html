@@ -9,9 +9,9 @@
         <div class="left-side">
             <h1>Progress Overview for {{student.first_name}} {{student.last_name}}</h1>
             <h2>Major</h2>
-            <div class="rectangle">{{student.major}}</div>
+            <div class="rectangle" style="display: flex; justify-content: center; align-items: center;">{{student.major}}</div>
             {% if student.major2 != "Undeclared" %}
-            <div class="rectangle">{{student.major2}}</div>
+            <div class="rectangle" style="display: flex; justify-content: center; align-items: center;">{{student.major2}}</div>
             {% endif %}
             {% if student.minor != "None" or student.minor2 != "None"%}
             <h3>Minors</h3>
@@ -23,13 +23,12 @@
             <div class="rectangle">{{student.minor2}}</div>
             {% endif %}
             <h3>University Core</h3>
-            <div class="rectangle">0%</div>
+            <div class="rectangle" style="display: flex; justify-content: center; align-items: center;">0%</div>
             <h3>Total Credits</h3>
             <div class="rectangle" style="position: relative;">
                 <div class="progress" style="position: absolute; top: 0; left: 0; width: {{ completion_percentage }}%; height: 100%; background-color: gold;"></div>
-                <div class="progress-bar" style="width: {{ credits_percentage }}%; height: 100%; background-color: #B29D6C;">{{ credits_percentage }}%</div>
+                <div class="progress-bar" style="display: flex; width: {{ credits_percentage }}%; height: 100%; background-color: #B29D6C;">{{ credits_percentage }}%</div>            </div>
             </div>
-        </div>
         <div class="right-side">
             <div class="button-container">
                 <form method="post" id="primary-plan-form" action="{% url 'Plan:set_primary_plan' %}">

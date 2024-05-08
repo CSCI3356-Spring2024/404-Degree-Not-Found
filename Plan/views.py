@@ -266,7 +266,6 @@ def future_plan_view(request, plan_id, plan_num):
         courses_by_semester.append((semester_num, course_tuple_list))
     
     is_valid = validate_major_requirements(plan, student_major)
-
     return render(request, 'futureplan.html', {'student': student, 'plan': plan, 'semester_nums': semester_nums, 'courses_by_semester':courses_by_semester,'semester_names': semester_names, 'plan_id': plan_id, 'plan_num': plan_num, 'total_credits': total_credits, 'completed_credits': completed_credits, "is_valid": is_valid})
 
 
