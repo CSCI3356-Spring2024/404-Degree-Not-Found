@@ -1,11 +1,17 @@
 
-def validate_major_requirements(plan, major, saved_courses = []):
+
+
+def validate_major_requirements(plan, major, saved_courses = None):
     # Initialize major_requirements with a default value
     major_requirements = {}
 
-    if saved_courses == []:
+    if saved_courses == None:
+        saved_courses = []
         for semester_num in ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8']:
             saved_courses.extend(plan.__dict__[semester_num])
+        print("Entire Progress")
+    else:
+        print("Completed Progress")
         
     # A function that checks if a single course is in the plan
     def course_in_plan(course_code):
@@ -93,8 +99,11 @@ def validate_major_requirements(plan, major, saved_courses = []):
     finished_req = 0
     errormessages = []
     print("MAJOR REQ")
+    print(saved_courses)
     print(major)
     print(major_requirements)
+    print()
+    print()
     
     for req in major_requirements[1]:
         finished_req += req[0]

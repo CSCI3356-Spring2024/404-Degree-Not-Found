@@ -99,7 +99,7 @@
             <div class="row">
                 <!-- University Error Messages -->
                 <div class="col-md-4" style="border: 1px solid black; padding: 10px;">
-                    <h4>University Requirements</h4>
+                    <h5>University Core</h5>
                     {% if is_valid3 %}
                     <p><span style="color: green; font-weight: bold;">Your plan meets the university requirements.</span></p>
                     {% else %}
@@ -111,7 +111,7 @@
 
                 <!-- Major Error Messages -->
                 <div class="col-md-4" style="border: 1px solid black; padding: 10px;">
-                        <h4>Major 1 Requirements</h4>
+                        <h5>Major 1: {{ student.major }}</h5>
                         {% if student.major != "Undeclared" %}
                             {% if is_valid %}
                             <p><span style="color: green; font-weight: bold;">Your plan meets the {{ student.major }} requirements.</span></p>
@@ -120,8 +120,6 @@
                                 <p>• {{ error }}</p>
                             {% endfor %}
                             {% endif %}
-                        {% else %}
-                            <p><span style="color: green; font-weight: bold;">Major 1 is currrently undeclared</span></p>
 
                         
                         {% endif %}
@@ -130,7 +128,7 @@
 
                 <!-- Major Error Messages -->
                 <div class="col-md-4" style="border: 1px solid black; padding: 10px;">
-                    <h4>Major 2 Requirements</h4>
+                    <h5>Major 2: {{ student.major2 }}</h5>
 
                     {% if student.major2 != "Undeclared" %}
                         {% if is_valid2 %}
@@ -140,8 +138,6 @@
                             <p>• {{ error }}</p>
                         {% endfor %}
                         {% endif %}
-                    {% else %}
-                        <p>• Major 2 is currently undeclared</p>
 
                     {% endif %}
             </div>

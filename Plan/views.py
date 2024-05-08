@@ -457,7 +457,7 @@ def remove_course(request):
             plan_num = form.cleaned_data['plan_num']
             semester_num = form.cleaned_data['semester_num'] 
             if form.remove_course():
-                return HttpResponseRedirect(reverse('Plan:futureplan', kwargs={'plan_id': plan_id, 'plan_num': plan_num}))
+                return redirect('Plan:futureplan', plan_id, plan_num)
             else:
                 print('Failed to remove course. Course or plan not found.')
         else:
