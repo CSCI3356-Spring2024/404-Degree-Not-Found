@@ -67,13 +67,48 @@
     </div>
     {% if is_valid %}
     <div class="text">
-        <p><span style="color: green; font:bold;">Your plan meets the major requirements.</span></p>
+        <p><span style="color: green; font-weight: bold;">Your plan meets the {{ student.major }} requirements.</span></p>
+
     </div>
     {% else %}
     <div class="text">
-        <p><span style="color: #931C22; font:bold;">Your plan does not meet the major requirements. Please review and make necessary adjustments.</span></p>
+        <p><span style="color: #931C22; font-weight:bold;">Your plan does not meet the {{ student.major }} requirements. Please review and make necessary adjustments.</span></p>
+        {% for error in errormessages %}
+                <p><span style="color: #931C22;">- {{ error }}</span></p>
+        {% endfor %}
     </div>
     {% endif %}
+
+    {% if is_valid2 %}
+    <div class="text">
+        <p><span style="color: green; font-weight: bold;">Your plan meets the {{ student.major2 }} requirements.</span></p>
+
+    </div>
+    {% else %}
+    <div class="text">
+        <p><span style="color: #931C22; font-weight:bold;">Your plan does not meet the {{ student.major2 }} requirements. Please review and make necessary adjustments.</span></p>
+        {% for error in errormessages2 %}
+                <p><span style="color: #931C22;">- {{ error }}</span></p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if is_valid3 %}
+    <div class="text">
+        <p><span style="color: green; font-weight: bold;">Your plan meets the university requirements.</span></p>
+
+    </div>
+    {% else %}
+    <div class="text">
+        <p><span style="color: #931C22; font-weight:bold;">Your plan does not meet the university requirements. Please review and make necessary adjustments.</span></p>
+        {% for error in errormessages3 %}
+                <p><span style="color: #931C22;">- {{ error }}</span></p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+
+
     {% if prereq_conflict %}
     <div class="text">
         <p>Prerequisite conflict found with {{ prereq_conflict }}.</p>
