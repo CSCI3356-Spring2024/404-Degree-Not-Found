@@ -84,7 +84,7 @@ def landing_view(request):
     if primary_plan is not None:
         # Total Credits
         completed = credits_completed(primary_plan, int(student.entered))
-        credits_percentage = round((completed / credits_required) * 100,1)
+        credits_percentage = round((completed / credits_required) * 100)
         
         taken_courses = courses_completed(primary_plan,int(student.entered))
 
