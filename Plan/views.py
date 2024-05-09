@@ -240,7 +240,7 @@ def credits_completed(plan, entered_year):
     for semester, dates in zip(plan_objects, completed_dates):
         if is_date_passed(dates[0],dates[1],dates[2]):
             for coursecode in semester:
-                print("CourseCode": coursecode)
+                print("CourseCode", coursecode)
                 data = fetch_course_data(coursecode)
                 completed_credits += data["credits"]
         else:
