@@ -23,13 +23,6 @@ class CustomTypeError(Exception):
         self.message = message
         super().__init__(self.message)
 
-try:
-    # Some code that may raise an exception
-    x = 10 / 0
-except ZeroDivisionError as e:
-    # Catch the specific exception and modify the error message
-    raise CustomError("Cannot divide by zero") from e
-
 
 def signup_view(request):
     if request.method == 'POST':
