@@ -1,1 +1,1 @@
-web: cd ./EaglePlan && python manage.py migrate && gunicorn EaglePlan.wsgi
+web: cd ./EaglePlan && python manage.py migrate && gunicorn EaglePlan.wsgi && java -jar planning-app-0.1.1.jar
