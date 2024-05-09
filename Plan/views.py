@@ -18,6 +18,18 @@ from .major_requirements import validate_major_requirements
 from .get_next_semester import get_current_semester, get_upcoming_semesters, get_total_semesters
 from .university_requirements import validate_university_requirements
 
+class CustomError(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+try:
+    # Some code that may raise an exception
+    x = 10 / 0
+except ZeroDivisionError as e:
+    # Catch the specific exception and modify the error message
+    raise CustomError("Cannot divide by zero") from e
+
 
 def signup_view(request):
     if request.method == 'POST':
