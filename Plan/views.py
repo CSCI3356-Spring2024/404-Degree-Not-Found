@@ -18,7 +18,7 @@ from .major_requirements import validate_major_requirements
 from .get_next_semester import get_current_semester, get_upcoming_semesters, get_total_semesters
 from .university_requirements import validate_university_requirements
 
-class CustomError(Exception):
+class CustomTypeError(Exception):
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
