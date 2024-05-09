@@ -1,0 +1,82 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto; 
+    padding: 20px;
+}
+
+.heading {
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-field {
+    margin-bottom: 20px; /* spacing between fields */
+}
+
+.error-message {
+    color: #931C22;
+    font-size: 0.9em;
+    margin-top: 15px; 
+    margin-bottom: 15px;
+    margin-left: 10px; /* Add indentation */
+    font-weight: bold;
+}
+
+.profile-form {
+    width: 100%;
+}
+
+p {
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+    appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 12px;
+}
+
+select:focus {
+    border: 2px solid #931C22;
+}
+
+/* CSS for submit button */
+button[type="submit"] {
+    background-color: #719cca;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; 
+}
+
+button[type="submit"]:hover {
+    background-color: #2979ce;
+}

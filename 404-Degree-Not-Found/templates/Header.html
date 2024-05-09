@@ -1,0 +1,37 @@
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static '/header.css' %}">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+    </style>
+    <link rel="stylesheet" href="{% static '/style.css' %}">
+
+</head>
+<body class="inter-body">
+    <div class = "header">
+        <div class = "header_container"> 
+            <img class = "header_img" src="{% static '/images/eagleapps-logo-header.svg'%}"/>
+            <div class = "header_text"><a href="{% url 'Plan:landing' %}" class="link-white">Eagle Plan</a></div>
+        
+        </div> 
+        {% if not request.path == '/' %}
+        <div class = "header_container">
+            <div class = "profile_text"><a href="{% url 'Plan:profile' %}" class="link-white">User Information</a></div>
+        </div>
+       
+        <div class = "header_container">
+            <div class = "profile_text"><a href="{% url 'Plan:login' %}" class="link-white">{{ student.first_name}} {{student.last_name}}</a>
+        </div>
+        {% endif %}
+        </div>
+        
+    </div>
+    <div className = "body">
+
+    </div>
+    {% block content %} 
+    {% endblock %}
+</body>

@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.body_container {
+    padding: 20px; 
+}
+
+.search-container {
+    margin-bottom: 20px; 
+    padding: 0 20px;
+}
+
+.course-list {
+    margin-bottom: 20px; 
+}
+
+.course {
+    padding: 20px;
+}
+
+.pagination {
+    margin-top: 20px; 
+}

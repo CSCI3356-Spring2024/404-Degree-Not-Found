@@ -1,0 +1,44 @@
+
+{% load widget_tweaks %}
+{% load static %}
+<head> 
+    <link rel="stylesheet" href="{% static 'login_form.css' %}"> 
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+    </style>
+    <link rel="stylesheet" href="{% static '/style.css' %}">
+</head>
+
+<body class="inter-body">
+    <header>
+        <!-- {% block header %} -->
+        <!-- {% include 'header.html' %}  -->
+        <!-- {% endblock %} -->
+    </header>
+    <main>
+        {% block content %}
+        <div class="form-container">
+            <h1> Eagle Plan </h1>
+            <h2>Login</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    {% render_field form.username class="form-control" placeholder="Username" %}
+                </div>
+                <div class="form-group">
+                    {% render_field form.password class="form-control" placeholder="Password" %}
+                </div>
+                <button type="submit" class="submit-button">Login</button>
+            </form>
+
+            {% load socialaccount %}
+            <h2>Google Login</h2>
+            <a href="{% provider_login_url 'google' %}?next=/landing/"> <b> Login with Google</b></a>
+        </div>
+        <div class="signup-option">
+            <p class="signup-text"> Don't have an account? </p> 
+            <a href="{% url 'Plan:signup' %}" class="signup-link"> <b> Sign up</b></a>  
+        </div>
+        {% endblock %}
+    </main>
+</body>

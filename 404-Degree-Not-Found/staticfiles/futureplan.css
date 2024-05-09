@@ -1,0 +1,113 @@
+.courses-button, .requirements-button {
+    padding: 10px 20px;
+    background-color: #E1F2FF; /* Blue background */
+    color: #286897;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 5px; 
+    transition: background-color 0.3s ease; 
+    float: right;
+}
+
+.courses-button:hover, .requirements-button:hover {
+    background-color: #286897;
+    color: #E1F2FF
+}
+
+.button-container {
+    text-align: right; /* Align buttons to the right within the container */
+    margin-top: 20px; /* Adjust margin as needed */
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+.credits-container1 {
+    text-align: right;
+    margin-right: 20px; /* Adjust margin as needed */
+    margin-bottom: 0px;
+    margin-top: 10px
+}
+
+.credits-container2 {
+    text-align: right;
+    margin-right: 20px; /* Adjust margin as needed */
+    margin-top: 0px;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between; /* Align items with space between */
+    align-items: flex-end; /* Vertically center items */
+    margin-bottom: 0px; /* Adjust margin as needed */
+    margin-left: 30px;
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 1500px;
+    max-width: 1500px; /* Adjust as needed */
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: calc(25% - 20px);
+    max-width: 1500px;
+    height: 265px;
+    background-color: #E1F2FF;
+    margin: 5px;
+    box-sizing: border-box;
+}
+
+.course-rectangle {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    width: 100%;
+    height: 40px;
+    background-color: #E1F2FF;
+    margin: 0px;
+    box-sizing: border-box; 
+    border: 1px solid #999;
+}
+
+
+.course-rectangle .course-number {
+    flex: 1;
+}
+
+.course-rectangle form {
+    margin-left: 10px; /* Adjust margin as needed */
+}
+
+
+.course-rectangle form {
+    margin-left: auto; /* Push the form to the right */
+}
+
+.semester-name {
+    flex: 1;
+    width: 100%;
+    height: 10px;
+    background-color: #D9D9D9;
+    margin: 0px;
+    box-sizing: border-box; 
+    text-align: left;
+    padding: 5px;
+}
+
+.text {
+    margin-left: 30px;
+}

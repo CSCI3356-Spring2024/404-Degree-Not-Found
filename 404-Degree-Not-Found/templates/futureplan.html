@@ -1,0 +1,152 @@
+{% extends 'Header.html' %}
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="{% static 'futureplan.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <div class="header-container">
+        <h1>4 Year Plan - Plan {{plan_num}} </h1>
+        <div class="credits-container1">
+            <h3> Credits in Plan: {{total_credits}} / 120 </h3>
+        </div>
+    </div>
+    <div class="credits-container2">
+        <h3> Completed Credits: {{completed_credits}} / 120 </h3>
+    </div>
+    <div class="container">
+        {% for semester_num, course_list in courses_by_semester %}
+                <div class="box">
+                    <div class="semester-name">
+                        <b>
+                    {% if semester_num == 's1' %}
+                        Freshman Fall
+                    {% elif semester_num == 's2' %}
+                        Freshman Spring
+                    {% elif semester_num == 's3' %}
+                        Sophomore Fall
+                    {% elif semester_num == 's4' %}
+                        Sophomore Spring
+                    {% elif semester_num == 's5' %}
+                        Junior Fall
+                    {% elif semester_num == 's6' %}
+                        Junior Spring
+                    {% elif semester_num == 's7' %}
+                        Senior Fall
+                    {% elif semester_num == 's8' %}
+                        Senior Spring
+                    {% endif %}
+                    </b>
+                </div>
+                    {% if course_list %}
+                        {% for course_tuple in course_list %}
+                        <div style="display: flex; flex-direction: column-reverse;">                            
+                            <div class="course-rectangle">
+                                <span class="course-number">{{ course_tuple.1 }}</span>
+                                <form class="remove-form d-flex flex-column align-items-center" method="post" action="{% url 'Plan:remove_course' %}">                                    {% csrf_token %}
+                                    <input type="hidden" name="plan_id" value="{{ plan_id }}">
+                                    <input type="hidden" name="plan_num" value="{{ plan_num }}">
+                                    <input type="hidden" name="semester_num" value="{{ semester_num }}">
+                                    <input type="hidden" name="course_id" value="{{ course_tuple.0 }}">
+                                    <button type="submit" class="btn btn-link"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                            <p>No courses planned for this semester</p>
+                    {% endif %}
+                </div>
+        {% endfor %}
+    </div>
+
+    <!-- Add/Edit Courses Button -->
+    <div style="text-align:center; margin-top:20px; margin-bottom:100px;">
+        <a href="{% url 'Plan:course_list' plan_id=plan_id plan_num=plan_num %}" class="courses-button" >Add/Edit Courses</a>
+        <a href="{% url 'Plan:reqs_list' %}" class="requirements-button">View Requirements</a>
+    </div>
+    
+    <!-- Horizontal Line -->
+    <hr style="margin-top: 20px; margin-bottom: 20px;">
+
+    <!-- Prereq Header -->
+    <h2 style="text-align:center;">Prerequisite Verification</h2>
+
+    <div class="text" style="text-align: center;"> <!-- Center the content -->
+        {% if prereq_conflict %}
+            <p>Prerequisite conflict found with {{ prereq_conflict }}.</p>
+        {% else %}
+            <p><span style="color: green; font-weight: bold;">No prerequisite issues found.</span></p>
+        {% endif %}
+    </div>
+
+    <!-- Horizontal Line -->
+    <hr style="margin-top: 20px; margin-bottom: 20px;">
+
+    <!-- Requirements Verification Header -->
+    <h2 style="text-align:center;">Requirements Verification</h2>
+
+
+        <div class="container">
+            <!-- Bootstrap Grid for Error Messages -->
+            <div class="row">
+                <!-- University Error Messages -->
+                <div class="col-md-4" style="border: 1px solid black; padding: 10px;">
+                    <h5>University Core</h5>
+                    {% if is_valid3 %}
+                    <p><span style="color: green; font-weight: bold;">Your plan meets the university requirements.</span></p>
+                    {% else %}
+                    {% for error in errormessages3 %}
+                        <p>• {{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+
+                <!-- Major Error Messages -->
+                <div class="col-md-4" style="border: 1px solid black; padding: 10px;">
+                        <h5>Major 1: {{ student.major }}</h5>
+                        {% if student.major != "Undeclared" %}
+                            {% if is_valid %}
+                            <p><span style="color: green; font-weight: bold;">Your plan meets the {{ student.major }} requirements.</span></p>
+                            {% else %}
+                            {% for error in errormessages %}
+                                <p>• {{ error }}</p>
+                            {% endfor %}
+                            {% endif %}
+
+                        
+                        {% endif %}
+
+                </div>
+
+                <!-- Major Error Messages -->
+                <div class="col-md-4" style="border: 1px solid black; padding: 10px;">
+                    <h5>Major 2: {{ student.major2 }}</h5>
+
+                    {% if student.major2 != "Undeclared" %}
+                        {% if is_valid2 %}
+                        <p><span style="color: green; font-weight: bold;">Your plan meets the {{ student.major2 }} requirements.</span></p>
+                        {% else %}
+                        {% for error in errormessages2 %}
+                            <p>• {{ error }}</p>
+                        {% endfor %}
+                        {% endif %}
+
+                    {% endif %}
+            </div>
+
+
+            </div>
+        </div>
+
+
+</body>
+</html>
+{% endblock %}
