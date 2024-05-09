@@ -1,1 +1,1 @@
-web: cd ./EaglePlan && python manage.py migrate && gunicorn EaglePlan.wsgi
+web: cd ./EaglePlan && python3 manage.py migrate && gunicorn EaglePlan.wsgi
