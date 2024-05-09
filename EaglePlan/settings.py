@@ -84,6 +84,12 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
 ]
 
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-b35c.up.railway.app'
+]
+
+
 ROOT_URLCONF = 'EaglePlan.urls'
 
 TEMPLATES = [
