@@ -12,10 +12,10 @@ The development of EaglePlan was motivated by the need for a centralized, intuit
 * Admin and Advisor Access: Provides aggregate data to help departments plan course offerings based on student interest.
 
 ## Technologies Used
-Frontend: HTML, CSS, Bootstrap
-Backend: Django
-Authentication: Google OAuth
-API Integration: EagleApps API for fetching course and requirement data
+* Frontend: HTML, CSS, Bootstrap
+* Backend: Django
+* Authentication: Google OAuth
+* API Integration: EagleApps API for fetching course and requirement data
 
 ## Login Page
 <img width="1660" alt="Login Page" src="https://github.com/CSCI3356-Spring2024/404-Degree-Not-Found/assets/89826556/9a63cf4b-665f-4047-b856-4289d212d46a">
